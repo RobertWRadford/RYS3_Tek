@@ -1,6 +1,6 @@
 # Ryse_Tek - Robert Radford, Yoni Palagashvili, Seth Mcfeeters
 
-## Communication plan: 
+## Communication plan:
 Work on remo throughout the day, exchanged phone numbers in case we can't contact through other planned methods. 0900 set meeting time to gurantee everyone has a chance to inquire about changing directions if they want to. Made a Slack group chat as well.
 
 ## Conflict plan: 
@@ -13,7 +13,7 @@ We will layout a blueprint, create the tasks vaguely that will be necessary to r
 Create a repo with a main, staging branch, and then each of our own working branches. Whenever a task is completed and code is functional push it into staging and each morning at the end of the meeting we can push staging to main.
 
 ## Any thing else you feel is important: 
-Outside work is fine but expectations are only Monday-Friday, and approximately 8 hours a day.
+Outside work is fine but expectations are only Monday-Thursday, and approximately 8 hours a day.
 
 ## MVP blueprint
 
