@@ -1,4 +1,4 @@
-# Rys3_Tek_Pro - Robert Radford, Yoni Palagashvili, Seth Mcfeeters
+# RYS3_Tek_Pro - Robert Radford, Yoni Palagashvili, Seth Mcfeeters
 
 ## Project Description:
 
