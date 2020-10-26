@@ -27,3 +27,5 @@ Outside work is fine but expectations are only Monday-Thursday, and approximatel
 2. render games on page with the option to add a game to your favorites
 3. database of favorites that can be added to or removed from
 4. add feature to the search results to make a recommendation based on similar titles to games you have favorited
+
+<img src = "assetts/images/Web 1920 – 1.png"></img>
