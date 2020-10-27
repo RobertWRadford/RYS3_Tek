@@ -25,6 +25,7 @@ app.post('/search', (req, res) => { // check radVal and call the correct functio
         pubPage(queryStr, res);
     }
 });
+app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
 app.get('/nomatch', notMatched);
 app.delete('/del', delItem);
@@ -41,7 +42,7 @@ function Game(game){
     this.genres = game.genres ? game.genres.map(type => type.name) : ['No data'];
     this.trailer = game.clip ? game.clip.clip ? game.clip.clip : '' : '';
     this.filters = game.tags ? game.tags.map(tag => tag.name) : ['No data'];
-    this.description = game.description ? game.description : 'No data';
+    this.description = game.description_raw ? game.description_raw : 'No data';
 }
 
 function homePage(req, res){
@@ -54,9 +55,9 @@ function homePage(req, res){
         .then(list => {
             let gamesList = list.results.map(game => new Game(game));
             let pages = {
-                previous: list.previous ? list.previous : null,
+                previous: list.previous ? page-1 : null,
                 current: page,
-                next: list.next ? list.next : null
+                next: list.next ? page+1 : null
             }
             res.render('/homepage.ejs', {gamesList: gamesList, pages: pages});
         })
