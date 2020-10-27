@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%= include ../public/layouts/head %>
+    <body>
+        <h1>MY GAMES</h1>
+        <ul>
+            <% games.forEach(game => { %>
+                <li>
+                    <h2>game.title</h2>
+                    <img src = "<% game.img_url">
+                    <input type="hidden" name="title" value="game.title" required>
+                    <input type="hidden" name="creator" value="game.creator" required>
+                    <input type="hidden" name="rating" value="game.rating" required>
+                    <input type="hidden" name="title" value="game.title" required>
+                    <input type="hidden" name="title" value="game.title" required>
+                    <input type="hidden" name="title" value="game.title" required>
+                    <button type="submit">DETAILS</button>
+                </li>
+            <% }) %>
+        </ul>
+    </body>
+    <%= include ../public/layouts/footer %>
+</html>
