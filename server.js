@@ -1,5 +1,5 @@
 'use strict'
-
+//CONFIGURATIONS
 require('dotenv').config();
 const express = require('express');
 const pg = require('pg');
@@ -9,13 +9,13 @@ const cors = require('cors');
 const PORT = process.env.PORT || 3015;
 const client = new pg.Client(process.env.DATABASE_URL);
 client.on('error', err => console.log('client on error'));
-
+//APPLY EJS TO THE VIEWS FOLDER
 app.set('view engine', 'ejs');
-
+//USE THE EJS AS A STATIC FRONT END FOR OUR SERVER
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cors());
-
+//ROUTES
 app.get('/', homePage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
     let queryStr = inputVal.split(' ').join('-');
@@ -29,7 +29,7 @@ app.get('/favorites', favPage);
 app.get('/nomatch', notMatched);
 app.delete('/del', delItem);
 app.get('*', err => console.log('error 404'));
-
+//FUNCTIONS
 function homePage(req, res){
     //query https://api.rawg.io/api/games?order=-rating
     //render all games with pagination, maybe 15 at a time to match wireframe; maybe attach data tags to the sections
