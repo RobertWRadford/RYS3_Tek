@@ -28,4 +28,4 @@ Outside work is fine but expectations are only Monday-Thursday, and approximatel
 3. database of favorites that can be added to or removed from
 4. add feature to the search results to make a recommendation based on similar titles to games you have favorited
 
-<img src = "assetts/images/Web 1920 – 1.png"></img>
+<img src = "assets/images/WRRC_diagram.png"></img>

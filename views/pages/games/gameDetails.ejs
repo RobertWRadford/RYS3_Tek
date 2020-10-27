@@ -1,9 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%= include ../public/layouts/head %>
+    <%= include(''../public/layouts/head') %>
     <body>
         <h1>Game Details</h1>
         
+        <form action="/schema" method="POST">
+            <fieldset>
+                <input type="hidden" name="id" value="<% game.id %>" required>
+                <input type="hidden" name="title" value="<% game.title %>" required>
+                <input type="hidden" name="publisher" value="<% game.publisher %>" required>
+                <input type="hidden" name="description" value="<% game.description %>" required>
+                <input type="hidden" name="image_url" value="<% game.image_url %>" required>
+                <input type="hidden" name="tag" value="<% game.tag %>" required>
+                <input type="hidden" name="genre" value="<% game.genre %>" required>
+                <input type="hidden" name="platform" value="<% game.platform %>" required>
+                <button type="submit">SAVE GAME</button>
+            </fieldset>
+        </form>
     </body>
-    <%= include ../public/layouts/footer %>
+    <%= include ('../public/layouts/footer') %>
 </html>

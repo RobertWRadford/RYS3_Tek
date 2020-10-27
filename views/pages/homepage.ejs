@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%= include ../public/layouts/head %>
+    <%= include('../public/layouts/head') %>
     <body>
-       
+        <h1>HOMEPAGE</h1>
+        <% allGames.forEach(apiGame => { %>
+            <section>
+                <form action="/gameDetails" method="POST">
+                    <img src = "<% apiGame.background_image %>">
+                    <button type="submit"> <% apiGame.name %> </button>
+                </form>
+            </section>
+        <% }) %>
     </body>
-    <%= include ../public/layouts/footer %>
+    <%= include('../public/layouts/footer') %>
 </html>
