@@ -31,20 +31,18 @@ app.post('/schema', saveItem);
 app.delete('/del', delItem);
 app.get('*', () => console.log('error 404'));
 
+//FUNCTIONS START
 function Game(game){
-    let critic;
-    if (game.rating && game.rating_top){
-        critic = (game.rating / game.rating_top) * 100;
-    }
     this.title = game.name ? game.name : 'Unknown';
     this.image_url = game.background_image ?  game.background_image : 'https://image.freepik.com/free-vector/glitch-game-background_23-2148090006.jpg';
-    this.rating = critic ? critic + '%' : 'No data';
+    this.rating = game.rating ? game.rating : 'No data';
     this.ratingCount = game.ratings_count ? game.ratings_count : 'No data';
     this.platforms = game.platforms ? game.platforms.map(plat => plat.platform.name) : ['No data'];
     this.parent_platforms = game.parent_platforms ? game.parent_platforms.map(plat => plat.platform.name) : ['No data'];
     this.genres = game.genres ? game.genres.map(type => type.name) : ['No data'];
-    this.trailer = game.clip ? game.clip.clip : '';
+    this.trailer = game.clip ? game.clip.clip ? game.clip.clip : '' : '';
     this.filters = game.tags ? game.tags.map(tag => tag.name) : ['No data'];
+    this.description = game.description ? game.description : 'No data';
 }
 
 function homePage(req, res){
