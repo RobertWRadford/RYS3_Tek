@@ -28,7 +28,7 @@ app.post('/search', (req, res) => { // check radVal and call the correct functio
 app.get('/favorites', favPage);
 app.get('/nomatch', notMatched);
 app.delete('/del', delItem);
-app.get('*', err => console.log('error 404'))
+app.get('*', err => console.log('error 404'));
 
 function homePage(req, res){
     //query https://api.rawg.io/api/games?order=-rating
