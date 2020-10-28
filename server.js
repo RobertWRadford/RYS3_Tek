@@ -19,13 +19,10 @@ app.use(cors());
 app.get('/', homePage);
 app.post('/detail', detailPage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
-    let queryStr = inputVal.split(' ').join('-');
-    if (req.body.radVal === 'games'){
-        detailPage(queryStr, res);
-    } else {
-        pubPage(queryStr, res);
-    }
+    let queryStr = inputVal.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
+    detailPage(queryStr, res);
 });
+app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
 app.get('/nomatch', notMatched);
 //app.post('/schema', saveItem);
@@ -43,7 +40,8 @@ function Game(game){
     this.genres = game.genres ? game.genres.map(type => type.name) : ['No data'];
     this.trailer = game.clip ? game.clip.clip ? game.clip.clip : '' : '';
     this.filters = game.tags ? game.tags.map(tag => tag.name) : ['No data'];
-    this.description = game.description ? game.description : 'No data';
+    this.description = game.description_raw ? game.description_raw : 'No data';
+    this.gameID = game.id ? game.id : 4828;
 }
 
 function homePage(req, res){
@@ -93,6 +91,20 @@ function notMatched(noMatch, res){
 function favPage(req, res){
     // query database and populate all favorites, maybe paginate if over thresholds
     // give options to delete items from favorites or go to its detail page
+    const sql = 'SELECT * FROM games;';
+    client.query(sql)
+        .then(results => {
+            res.render('pages/favorites.ejs', {games: results.rows});
+        })
+        .catch(err => console.log('fav page error'))
+}
+
+function saveGame(req, res){
+    const obj = req.body.game;
+    let sql = `INSERT INTO games(title, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`;
+    let values = [obj.title, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.trailer, obj.filters, obj.description]
+    client.query(sql, values)
+        .catch(err => console.log('save favorite error'))
 }
 //function saveItem (req, res){
     
@@ -100,6 +112,11 @@ function favPage(req, res){
 function delItem(req, res){
     // remove selected item from favorites list
     // redirect to /favorites
+    let delId = req.body.id;
+    let sql = `DELETE FROM books WHERE id=${delId};`;
+    client.query(sql)
+    .then(res.redirect('pages/favorites'))
+    .catch(err => console.error('returned error:', err));
 }
 
 client.connect().then(() => {
