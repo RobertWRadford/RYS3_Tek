@@ -19,7 +19,11 @@ app.use(cors());
 app.get('/', homePage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
     let queryStr = inputVal.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
-    detailPage(queryStr, res);
+    detailPage(req, res, queryStr);
+});
+app.post('/gamepage', (req, res) => {
+    let queryStr = req.body.slug ? req.body.slug : 'unknown';
+    detailPage(req, res, queryStr);
 });
 app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
@@ -30,6 +34,7 @@ app.get('*', () => console.log('error 404'));
 //FUNCTIONS START
 function Game(game){
     this.title = game.name ? game.name : 'Unknown';
+    this.slug = game.slug ? game.slug : 'unknown';
     this.image_url = game.background_image ?  game.background_image : 'https://image.freepik.com/free-vector/glitch-game-background_23-2148090006.jpg';
     this.rating = game.rating ? game.rating : 'No data';
     this.ratingCount = game.ratings_count ? game.ratings_count : 'No data';
@@ -61,7 +66,7 @@ function homePage(req, res){
         .catch(err => console.log('home page err'))
 }
 
-function detailPage(queryStr, res){
+function detailPage(req, res, queryStr){
     // let url=https://api.rawg.io/api/games/${queryStr};
     // if it doesnt pull an exact match redirect to nomatch
     // render page with relevant data

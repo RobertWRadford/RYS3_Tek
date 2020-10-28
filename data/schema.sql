@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS games;
 CREATE TABLE games (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255),
+    slug varchar(255),
     image_url VARCHAR(255),
     rating VARCHAR(255),
     ratingCount VARCHAR(255),
