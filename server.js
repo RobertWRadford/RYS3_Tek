@@ -17,9 +17,8 @@ app.use(express.static('public'));
 app.use(cors());
 //ROUTES
 app.get('/', homePage);
-app.post('/detail', detailPage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
-    let queryStr = inputVal.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
+    let queryStr = req.body.search.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
     detailPage(req, res, queryStr);
 });
 app.post('/gamepage', (req, res) => {
@@ -77,9 +76,9 @@ function detailPage(req, res, queryStr){
     superagent.get(url)
         .then(list => {
             let game = new Game(list.body);
-            res.render('pages/games/gameDetails.ejs',{game: game});
+            res.render('pages/games/gameDetails.ejs', {game: game});
         })
-        .catch( res.render('pages/searches/nomatches.ejs'))
+        .catch((req, res) => res.render('pages/searches/nomatches.ejs'))
 }
 
 function favPage(req, res){
@@ -88,15 +87,15 @@ function favPage(req, res){
     const sql = 'SELECT * FROM games;';
     client.query(sql)
         .then(results => {
-            res.render('pages/favorites.ejs', {games: results.rows});
+            res.render('pages/games/favorites.ejs', {games: results.rows});
         })
         .catch(err => console.error('returned error:', err))
 }
 
 function saveGame(req, res){
-    const obj = req.body.game;
-    let sql = `INSERT INTO games(title, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`;
-    let values = [obj.title, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.trailer, obj.filters, obj.description]
+    const obj = req.body;
+    let sql = `INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
+    let values = [obj.title, obj.slug, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.trailer, obj.filters, obj.description]
     client.query(sql, values)
         .catch(err => console.error('returned error:', err))
 }
