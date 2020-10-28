@@ -30,6 +30,15 @@
                     <button type="submit"> SAVE THIS GAME </button>
                 </fieldset>
             </form>
+        <% deals.forEach(deal => { %>
+            <h2>Store: <%= deal.shop %></h2>
+            <ul>
+                <li>Sale percentage: <%= deal.sale %></li>
+                <li>Sale price: <%= deal.price %></li>
+                <li>Original price: <%= deal.originalPrice %></li>
+            </ul>
+        <% }); %>
+        <%- include('../../../public/layouts/footer') %>
     </body>
-    <%- include('../../../public/layouts/footer') %>
+    
 </html>

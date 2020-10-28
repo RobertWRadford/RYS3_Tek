@@ -19,6 +19,7 @@ app.use(cors());
 app.use(methodOverride('_method'));
 //ROUTES
 app.get('/', homePage);
+app.post('/', homePage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
     let queryStr = req.body.search.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
     detailPage(req, res, queryStr);
@@ -29,12 +30,16 @@ app.post('/gamepage', (req, res) => {
 });
 app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
-//app.post('/schema', saveItem);
 app.post('/addFavorite', saveGame);
 app.delete('/favorites', delItem);
 app.get('*', () => console.log('error 404'));
 
 //FUNCTIONS START
+let stores = [];
+superagent.get('https://www.cheapshark.com/api/1.0/stores')
+    .then(list => stores = list.body.map(store => store.storeName))
+    .catch(err => console.error('returned error:', err))
+
 function Game(game){
     this.title = game.name ? game.name : 'Unknown';
     this.slug = game.slug ? game.slug : 'unknown';
@@ -50,12 +55,24 @@ function Game(game){
     this.gameID = game.id ? game.id : 4828;
 }
 
+function Deal(store){
+    let storeNum = store.storeID ? store.storeID : 1;
+    this.price = store.salePrice ? store.salePrice : 'Unknown';
+    this.originalPrice = store.normalPrice ? store.normalPrice : 'Unknown';
+    this.sale = store.savings ? store.savings.slice(0, 2) : 'Unknown';
+    this.shop = stores[storeNum-1];
+}
+
 function homePage(req, res){
     //1. query https://api.rawg.io/api/games?order=-rating
     //2. render all games with pagination, maybe 15 at a time to match wireframe; maybe attach data tags to the sections
     //3. create internal functions to remove sections that don't fall into filter rules
     let page = req.body.page ? parseInt(req.body.page) : 1;
-    const url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
+    let url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
+    let platforms = req.body.platforms ? typeof(req.body.platforms) == 'object' ? '&platforms='+req.body.platforms.join(',') : '&platforms='+req.body.platforms : '';
+    let genres = req.body.genres ? typeof(req.body.genres) == 'object' ? '&genres='+req.body.genres.join(',') : '&genres='+req.body.genres : '';
+    url = url + platforms + genres;
+    console.log(url);
     superagent.get(url)
         .then(list => {
             let gamesList = list.body.results.map(game => new Game(game));
@@ -74,10 +91,17 @@ function detailPage(req, res, queryStr){
     // if it doesnt pull an exact match redirect to nomatch
     // render page with relevant data
     const url = `https://api.rawg.io/api/games/${queryStr}`;
+    console.log(stores);
     superagent.get(url)
         .then(list => {
             let game = new Game(list.body);
-            res.render('pages/games/gameDetails.ejs', {game: game});
+            let url2 = `https://www.cheapshark.com/api/1.0/deals?title=${game.slug}&exact=1`;
+            superagent.get(url2)
+                .then(result => {
+                    let deals = result.body.map(store => new Deal(store));
+                    res.render('pages/games/gameDetails.ejs', {game: game, deals: deals});
+                })
+                .catch(err => console.error('returned error:', err))
         })
         .catch((req, res) => res.render('pages/searches/nomatches.ejs'))
 }
