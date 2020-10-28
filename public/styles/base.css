@@ -42,13 +42,6 @@ h1{
     font-family: 'Comic Dandy', sans-serif;
 }
 
-/* button{
-    border: none;
-    background: #8d99aeff;
-    padding:2vw;
-    color: white;
-    font-size: 2vw;
-} */
 
 form input,form button{
     padding:0.8vw;
@@ -56,6 +49,14 @@ form input,form button{
     border: none;
     background: #edf2f4ff;
     box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.20);
+}
+
+p{
+    color: #edf2f4ff;
+    margin: 2vw;
+}
+
+@media all and (max-width: 699px){
 }
 
 

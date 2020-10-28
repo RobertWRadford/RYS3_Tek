@@ -2,6 +2,8 @@ h2{
     float: left;
 }
 
-.links{
+.fa-bars{
     float: right;
+    color: #edf2f4ff;
+    font-size: 8vw;
 }
