@@ -17,6 +17,7 @@ app.use(express.static('public'));
 app.use(cors());
 //ROUTES
 app.get('/', homePage);
+app.post('/detail', detailPage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
     let queryStr = inputVal.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
     detailPage(req, res, queryStr);
@@ -27,6 +28,7 @@ app.post('/gamepage', (req, res) => {
 });
 app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
+//app.post('/schema', saveItem);
 app.post('/addFavorite', saveGame);
 app.delete('/del', delItem);
 app.get('*', () => console.log('error 404'));
@@ -45,13 +47,14 @@ function Game(game){
     this.filters = game.tags ? game.tags.map(tag => tag.name) : ['No data'];
     this.description = game.description_raw ? game.description_raw : 'No data';
     this.gameID = game.id ? game.id : 4828;
+    this.slug = game.slug ? game.slug : 'No data';
 }
 
 function homePage(req, res){
     //1. query https://api.rawg.io/api/games?order=-rating
     //2. render all games with pagination, maybe 15 at a time to match wireframe; maybe attach data tags to the sections
     //3. create internal functions to remove sections that don't fall into filter rules
-    let page = req.body.page ? req.body.page : '1';
+    let page = req.body.page ? parseInt(req.body.page) : 1;
     const url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
     superagent.get(url)
         .then(list => {
@@ -70,13 +73,13 @@ function detailPage(req, res, queryStr){
     // let url=https://api.rawg.io/api/games/${queryStr};
     // if it doesnt pull an exact match redirect to nomatch
     // render page with relevant data
-    const url = `https://api.rawg.io/api/games/${queryStr}`;
+    const url = `https://api.rawg.io/api/games/${queryStr.body.slug}`;
     superagent.get(url)
         .then(list => {
             let game = new Game(list.body);
-            res.render('pages/gameDetails.ejs', {game: game});
+            res.render('pages/games/gameDetails.ejs',{game: game});
         })
-        .catch((req, res) => res.render('/nomatches.ejs'))
+        .catch( res.render('pages/searches/nomatches.ejs'))
 }
 
 function favPage(req, res){
@@ -97,7 +100,9 @@ function saveGame(req, res){
     client.query(sql, values)
         .catch(err => console.error('returned error:', err))
 }
-
+//function saveItem (req, res){
+    
+//}
 function delItem(req, res){
     // remove selected item from favorites list
     // redirect to /favorites
