@@ -24,8 +24,8 @@ app.post('/search', (req, res) => { // check radVal and call the correct functio
 });
 app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
-app.get('/nomatch', notMatched);
 //app.post('/schema', saveItem);
+app.post('/addFavorite', saveGame);
 app.delete('/del', delItem);
 app.get('*', () => console.log('error 404'));
 
@@ -42,6 +42,7 @@ function Game(game){
     this.filters = game.tags ? game.tags.map(tag => tag.name) : ['No data'];
     this.description = game.description_raw ? game.description_raw : 'No data';
     this.gameID = game.id ? game.id : 4828;
+    this.slug = game.slug ? game.slug : 'No data';
 }
 
 function homePage(req, res){
@@ -58,34 +59,22 @@ function homePage(req, res){
                 current: page,
                 next: list.body.next ? list.body.next : null
             }
-            res.render('../views/pages/homepage.ejs', {gamesList: gamesList, pages: pages});
+            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages});
         })
         .catch(err => console.log('home page err'))
 }
 
-function pubPage(queryStr, res){
-    // let url=https://api.rawg.io/api/publishers/${queryStr};
-    // if it doesnt pull an exact match redirect to nomatch
-    // render page with relevant data
-}
-
-function detailPage(req, res){
-    const {title, image_url, rating, ratingCount, platforms, parent_platforms, genre, trailer, filters, description} = req.body;
-    const properties = [title, image_url, rating, ratingCount, platforms, parent_platforms, genre, trailer, filters, description]
-    console.log(properties[0]);
-    if (properties){
-        res.render('../views/pages/games/gameDetails', {properties : properties});
-    }else{
-        notMatched(req,res);
-    }
+function detailPage(queryStr, res){
     // let url=https://api.rawg.io/api/games/${queryStr};
     // if it doesnt pull an exact match redirect to nomatch
     // render page with relevant data
-
-}
-
-function notMatched(noMatch, res){
-    res.render('/views/pages/searches/noMatch', {noMatch: 'No match was found'});
+    const url = `https://api.rawg.io/api/games/${queryStr.body.slug}`;
+    superagent.get(url)
+        .then(list => {
+            let game = new Game(list.body);
+            res.render('pages/games/gameDetails.ejs',{game: game});
+        })
+        .catch( res.render('pages/searches/nomatches.ejs'))
 }
 
 function favPage(req, res){

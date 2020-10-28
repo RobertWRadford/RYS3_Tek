@@ -3,29 +3,29 @@
     <%- include('../../../public/layouts/head') %>
     <%- include('../../../public/layouts/header') %>
     <body>
-            <h1>Title: <%=properties[0] %> </h1>
-            <img src="<%=properties[1] %>">
-            <p>Rating: <%= properties[2] %></p>
-            <p>Rating Count: <%= properties[3] %></p>
-            <p>Platforms: <%= properties[4] %></p>
-            <p>Parent_platforms: <%= properties[5] %></p>
-            <p>Genre: <%= properties[6] %></p>
-            <p>Trailer: <%= properties[7] %></p>
-            <p>Filters: <%= properties[8] %></p>
-            <p>Description: <%= properties[9] %></p>
+            <h1>Title: <%=game.title %> </h1>
+            <img src="<%=game.image_url %>">
+            <p>Rating: <%= game.rating %></p>
+            <p>Rating Count: <%= game.ratingCount %></p>
+            <p>Platforms: <%= game.platforms %></p>
+            <p>Parent_platforms: <%= game.parent_platforms%></p>
+            <p>Genre: <%= game.genre %></p>
+            <p>Trailer: <%= game.trailer %></p>
+            <p>Filters: <%= game.filters %></p>
+            <p>Description: <%= game.description %></p>
             
             <form action="/schema" method="POST">
                 <fieldset>
-                    <input type="hidden" name="title" value="<%= properties[0] %>" required>
-                    <input type="hidden" name="image_url" value="<%= properties[1] %>" required>
-                    <input type="hidden" name="rating" value="<%= properties[2] %>" required>
-                    <input type="hidden" name="ratingCount" value="<%= properties[3] %>" required>
-                    <input type="hidden" name="platforms" value="<%= properties[4] %>" required>
-                    <input type="hidden" name="parent_platforms" value="<%= properties[5] %>" required>
-                    <input type="hidden" name="genre" value="<%= properties[6] %>" required>
-                    <input type="hidden" name="trailer" value="<%= properties[7] %>" required>
-                    <input type="hidden" name="filters" value="<%= properties[8] %>" required>
-                    <input type="hidden" name="description" value="<%= properties[9] %>" required>
+                    <input type="hidden" name="title" value="<%= game.title %>" required>
+                    <input type="hidden" name="image_url" value="<%= game.image_url %>" required>
+                    <input type="hidden" name="rating" value="<%= game.rating %>" required>
+                    <input type="hidden" name="ratingCount" value="<%= game.ratingCount %>" required>
+                    <input type="hidden" name="platforms" value="<%= game.platforms %>" required>
+                    <input type="hidden" name="parent_platforms" value="<%= game.parent_platforms%>" required>
+                    <input type="hidden" name="genre" value="<%= game.genre %>" required>
+                    <input type="hidden" name="trailer" value="<%= game.trailer %>" required>
+                    <input type="hidden" name="filters" value="<%= game.filters %>" required>
+                    <input type="hidden" name="description" value="<%= game.description %>" required>
                     <button type="submit"> SAVE THIS GAME </button>
                 </fieldset>
             </form>
