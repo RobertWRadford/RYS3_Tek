@@ -1,0 +1,43 @@
+c
+
+#container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body{
+    background: #2b2d42ff;
+    margin: 0 auto;
+    text-align: center;
+}
+
+img{
+    width: 100%;
+}
+
+section{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #d90429ff;
+    border-radius: 6px;
+    box-shadow: 5px 10px 14px;
+}
+
+h1{
+    font-size: 12vw;
+    color: #edf2f4ff;
+    font-family: 'Comic Dandy', sans-serif;
+}
+
+button{
+    border: none;
+    background: #8d99aeff;
+    width: 100%;
+    padding:2vw;
+    color: white;
+}
+
