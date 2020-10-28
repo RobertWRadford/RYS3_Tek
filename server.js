@@ -74,7 +74,7 @@ function detailPage(queryStr, res){
             let game = new Game(list.body);
             res.render('pages/games/gameDetails.ejs',{game: game});
         })
-        .catch( res.render('pages/searches/nomatches.ejs'))
+        .catch(res.render('pages/searches/nomatches.ejs'))
 }
 
 function favPage(req, res){
