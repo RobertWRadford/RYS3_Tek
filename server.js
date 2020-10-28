@@ -6,6 +6,7 @@ const pg = require('pg');
 const superagent = require('superagent');
 const app = express();
 const cors = require('cors');
+const methodOverride = require('method-override');
 const PORT = process.env.PORT || 3015;
 const client = new pg.Client(process.env.DATABASE_URL);
 client.on('error', err => console.log('client on error'));
@@ -15,6 +16,7 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cors());
+app.use(methodOverride('_method'));
 //ROUTES
 app.get('/', homePage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
@@ -29,7 +31,7 @@ app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
 //app.post('/schema', saveItem);
 app.post('/addFavorite', saveGame);
-app.delete('/del', delItem);
+app.delete('/favorites', delItem);
 app.get('*', () => console.log('error 404'));
 
 //FUNCTIONS START
@@ -86,6 +88,7 @@ function favPage(req, res){
     const sql = 'SELECT * FROM games;';
     client.query(sql)
         .then(results => {
+            console.log(results.rows);
             res.render('pages/games/favorites.ejs', {games: results.rows});
         })
         .catch(err => console.error('returned error:', err))
@@ -104,11 +107,11 @@ function saveGame(req, res){
 function delItem(req, res){
     // remove selected item from favorites list
     // redirect to /favorites
-    let delId = req.body.id;
-    let sql = `DELETE FROM books WHERE id=${delId};`;
+    let delId = req.body.remove_target;
+    let sql = `DELETE FROM games WHERE id=${delId}`;
     client.query(sql)
-    .then(res.redirect('pages/favorites'))
-    .catch(err => console.error('returned error:', err));
+        .then(res.redirect('/favorites'))
+        .catch(err => console.error('returned error:', err));
 }
 
 client.connect().then(() => {
