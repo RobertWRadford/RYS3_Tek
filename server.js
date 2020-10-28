@@ -17,13 +17,15 @@ app.use(express.static('public'));
 app.use(cors());
 //ROUTES
 app.get('/', homePage);
+app.post('/detail', detailPage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
     let queryStr = inputVal.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
     detailPage(queryStr, res);
 });
 app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
-app.post('/addFavorite', saveGame);
+app.get('/nomatch', notMatched);
+//app.post('/schema', saveItem);
 app.delete('/del', delItem);
 app.get('*', () => console.log('error 404'));
 
@@ -49,29 +51,41 @@ function homePage(req, res){
     let page = req.body.page ? req.body.page : '1';
     const url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
     superagent.get(url)
-        .then(list => {
-            let gamesList = list.results.map(game => new Game(game));
+    .then(list => {
+        let gamesList = list.body.results.map(game => new Game(game));
             let pages = {
-                previous: list.previous ? page-1 : null,
+                previous: list.body.previous ? list.body.previous : null,
                 current: page,
-                next: list.next ? page+1 : null
+                next: list.body.next ? list.body.next : null
             }
-            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages});
+            res.render('../views/pages/homepage.ejs', {gamesList: gamesList, pages: pages});
         })
         .catch(err => console.log('home page err'))
 }
 
-function detailPage(queryStr, res){
+function pubPage(queryStr, res){
+    // let url=https://api.rawg.io/api/publishers/${queryStr};
+    // if it doesnt pull an exact match redirect to nomatch
+    // render page with relevant data
+}
+
+function detailPage(req, res){
+    const {title, image_url, rating, ratingCount, platforms, parent_platforms, genre, trailer, filters, description} = req.body;
+    const properties = [title, image_url, rating, ratingCount, platforms, parent_platforms, genre, trailer, filters, description]
+    console.log(properties[0]);
+    if (properties){
+        res.render('../views/pages/games/gameDetails', {properties : properties});
+    }else{
+        notMatched(req,res);
+    }
     // let url=https://api.rawg.io/api/games/${queryStr};
     // if it doesnt pull an exact match redirect to nomatch
     // render page with relevant data
-    const url = `https://api.rawg.io/api/games/${queryStr}`;
-    superagent.get(url)
-        .then(list => {
-            let game = new Game(list.body);
-            res.render('pages/gameDetails.ejs', {game: game});
-        })
-        .catch((req, res) => res.render('/nomatches.ejs'))
+
+}
+
+function notMatched(noMatch, res){
+    res.render('/views/pages/searches/noMatch', {noMatch: 'No match was found'});
 }
 
 function favPage(req, res){
@@ -92,7 +106,9 @@ function saveGame(req, res){
     client.query(sql, values)
         .catch(err => console.log('save favorite error'))
 }
-
+//function saveItem (req, res){
+    
+//}
 function delItem(req, res){
     // remove selected item from favorites list
     // redirect to /favorites
