@@ -1,0 +1,33 @@
+
+/* --space-cadet: #2b2d42ff;
+--manatee: #8d99aeff;
+--alice-blue: #edf2f4ff;
+--imperial-red: #ef233cff;
+--amaranth-red: #d90429ff; */
+
+section{
+   margin:3vw; 
+}
+
+h1{
+    text-shadow: 
+    1px 2px black, 
+    2px 3px black,
+    3px 4px black,
+    4px 5px black,
+    5px 6px black,
+    6px 7px black,
+    7px 8px black,
+    8px 9px black;
+}
+
+.links{
+    text-decoration: none;
+    color: #edf2f4ff;
+}
+
+button:hover{
+    color: #2b2d42ff;
+    background-color: #edf2f4ff;
+    cursor: pointer;
+}
