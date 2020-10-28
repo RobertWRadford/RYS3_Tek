@@ -14,7 +14,7 @@
             <p>Filters: <%= game.filters %></p>
             <p>Description: <%= game.description %></p>
             
-            <form action="/schema" method="POST">
+            <form action="/addFavorite" method="POST">
                 <fieldset>
                     <input type="hidden" name="title" value="<%= game.title %>" required>
                     <input type="hidden" name="image_url" value="<%= game.image_url %>" required>
