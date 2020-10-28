@@ -19,16 +19,13 @@ app.use(cors());
 app.get('/', homePage);
 app.post('/detail', detailPage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
-    let queryStr = inputVal.split(' ').join('-');
-    if (req.body.radVal === 'games'){
-        detailPage(queryStr, res);
-    } else {
-        pubPage(queryStr, res);
-    }
+    let queryStr = inputVal.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
+    detailPage(queryStr, res);
 });
+app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
-app.get('/nomatch', notMatched);
 //app.post('/schema', saveItem);
+app.post('/addFavorite', saveGame);
 app.delete('/del', delItem);
 app.get('*', () => console.log('error 404'));
 
@@ -43,7 +40,9 @@ function Game(game){
     this.genres = game.genres ? game.genres.map(type => type.name) : ['No data'];
     this.trailer = game.clip ? game.clip.clip ? game.clip.clip : '' : '';
     this.filters = game.tags ? game.tags.map(tag => tag.name) : ['No data'];
-    this.description = game.description ? game.description : 'No data';
+    this.description = game.description_raw ? game.description_raw : 'No data';
+    this.gameID = game.id ? game.id : 4828;
+    this.slug = game.slug ? game.slug : 'No data';
 }
 
 function homePage(req, res){
@@ -56,43 +55,45 @@ function homePage(req, res){
     .then(list => {
         let gamesList = list.body.results.map(game => new Game(game));
             let pages = {
-                previous: list.body.previous ? list.body.previous : null,
+                previous: list.previous ? page-1 : null,
                 current: page,
-                next: list.body.next ? list.body.next : null
+                next: list.next ? page+1 : null
             }
-            res.render('../views/pages/homepage.ejs', {gamesList: gamesList, pages: pages});
+            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages});
         })
         .catch(err => console.log('home page err'))
 }
 
-function pubPage(queryStr, res){
-    // let url=https://api.rawg.io/api/publishers/${queryStr};
-    // if it doesnt pull an exact match redirect to nomatch
-    // render page with relevant data
-}
-
-function detailPage(req, res){
-    const {title, image_url, rating, ratingCount, platforms, parent_platforms, genre, trailer, filters, description} = req.body;
-    const properties = [title, image_url, rating, ratingCount, platforms, parent_platforms, genre, trailer, filters, description]
-    console.log(properties[0]);
-    if (properties){
-        res.render('../views/pages/games/gameDetails', {properties : properties});
-    }else{
-        notMatched(req,res);
-    }
+function detailPage(queryStr, res){
     // let url=https://api.rawg.io/api/games/${queryStr};
     // if it doesnt pull an exact match redirect to nomatch
     // render page with relevant data
-
-}
-
-function notMatched(noMatch, res){
-    res.render('/views/pages/searches/noMatch', {noMatch: 'No match was found'});
+    const url = `https://api.rawg.io/api/games/${queryStr.body.slug}`;
+    superagent.get(url)
+        .then(list => {
+            let game = new Game(list.body);
+            res.render('pages/games/gameDetails.ejs',{game: game});
+        })
+        .catch( res.render('pages/searches/nomatches.ejs'))
 }
 
 function favPage(req, res){
     // query database and populate all favorites, maybe paginate if over thresholds
     // give options to delete items from favorites or go to its detail page
+    const sql = 'SELECT * FROM games;';
+    client.query(sql)
+        .then(results => {
+            res.render('pages/favorites.ejs', {games: results.rows});
+        })
+        .catch(err => console.log('fav page error'))
+}
+
+function saveGame(req, res){
+    const obj = req.body.game;
+    let sql = `INSERT INTO games(title, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`;
+    let values = [obj.title, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.trailer, obj.filters, obj.description]
+    client.query(sql, values)
+        .catch(err => console.log('save favorite error'))
 }
 //function saveItem (req, res){
     
@@ -100,6 +101,11 @@ function favPage(req, res){
 function delItem(req, res){
     // remove selected item from favorites list
     // redirect to /favorites
+    let delId = req.body.id;
+    let sql = `DELETE FROM books WHERE id=${delId};`;
+    client.query(sql)
+    .then(res.redirect('pages/favorites'))
+    .catch(err => console.error('returned error:', err));
 }
 
 client.connect().then(() => {
