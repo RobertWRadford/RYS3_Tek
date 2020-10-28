@@ -1,8 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%= include ../public/layouts/head %>
+    <%- include('../../public/layouts/head') %>
     <body>
-       
+        <%- include('../../public/layouts/aside.ejs') %>
+        <% gamesList.forEach( game => {) %>
+            <%- include('/games/homepage_game_partial.ejs', {game: game}) %>
+        <% } %>
+        <% if(pages.previous != null) { %>
+            <form action='/homePagination' method='post'>
+                <input type='hidden' name='page' value='<%= pages.previous %>'/>
+                <button type='submit'><%= pages.previous %></button>
+            </form>
+        <%  } %>
+        <p><%= pages.current %></p>
+        <% if(pages.next != null) { %>
+            <form action='/homePagination' method='post'>
+                <input type='hidden' name='page' value='<%= pages.next %>'/>
+                <button type='submit'><%= pages.next %></button>
+            </form>
+        <%  } %>
+        <%- include('../../public/layouts/footer') %>
     </body>
-    <%= include ../public/layouts/footer %>
 </html>
