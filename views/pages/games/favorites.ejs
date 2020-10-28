@@ -7,15 +7,22 @@
             <% games.forEach(game => { %>
                 <li>
                     <h2>game.title</h2>
-                    <img src = "<% game.img_url">
-                    <input type="hidden" name="title" value="game.title" required>
-                    <input type="hidden" name="publisher" value="game.publisher" required>
-                    <input type="hidden" name="description" value="game.description" required>
-                    <input type="hidden" name="tag" value="game.tag" required>
-                    <input type="hidden" name="platfrom" value="game.platform" required>
-                    <input type="hidden" name="title" value="game.title" required>
-                    <button type="submit">DETAILS</button>
-                </li>
+                    <img src = "<% game.img_url %>">
+                    <fieldset>
+                        <input type="hidden" name="title" value="<%= game.title %>" required>
+                        <input type="hidden" name="image_url" value="<%= game.image_url %>" required>
+                        <input type="hidden" name="rating" value="<%= game.rating %>" required>
+                        <input type="hidden" name="ratingCount" value="<%= game.ratingCount %>" required>
+                        <input type="hidden" name="platforms" value="<%= game.platforms %>" required>
+                        <input type="hidden" name="parent_platforms" value="<%= game.parent_platforms %>" required>
+                        <input type="hidden" name="genre" value="<%= game.genre %>" required>
+                        <input type="hidden" name="trailer" value="<%= game.trailer %>" required>
+                        <input type="hidden" name="filters" value="<%= game.filters %>" required>
+                        <input type="hidden" name="description" value="<%= game.description %>" required>
+                        <input type="hidden" name="gameID" value="<%= game.gameID %>" required>
+                        <input type="hidden" name="slug" value="<%= game.slug %>" required>
+                        <button type="submit"> MORE DETAILS </button>
+                    </fieldset>
             <% }) %>
         </ul> 
     </body>
