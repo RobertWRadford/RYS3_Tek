@@ -1,6 +1,27 @@
 <aside>
-    <form class="side_bar" action="" method="post">
-        <input type="text" name="search" placeholder="Search..." minlength="3" required>    
-        
-    </form>
+    <form class="side_bar" action="/search" method="post">
+        <fieldset>
+            <input type="text" name="search" placeholder="Search..." minlength="1" required>
+            <button> submit </button>
+        </fieldset>
+
+        <form class="filter">
+            <select id="platform" name="platform">
+                <option value="PC">PC</option>
+                <option value="Playstion">Playstation</option>
+                <option value="iOS">iOS</option>
+                <option value="Android">Android</option>
+                <option value="xbox">xbox</option>
+                <option value="Apple Macintosh">Apple Macintosh</option>
+                <option value="Linux">Linux</option>
+                <option value="nintendo">nintendo</option>
+                <option value="atari">atari</option>
+                <option value="Commodore / Amiga">Commodore / Amiga</option>
+                <option value="Sega">Sega</option>
+                <option value="3DO">3DO</option>
+                <option value="Neo Geo">Neo Geo</option>
+                <option value="Web">Web</option>
+            </select>
+
+        </form>
 </aside>
