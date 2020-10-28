@@ -73,7 +73,7 @@ function detailPage(req, res, queryStr){
     // let url=https://api.rawg.io/api/games/${queryStr};
     // if it doesnt pull an exact match redirect to nomatch
     // render page with relevant data
-    const url = `https://api.rawg.io/api/games/${queryStr.body.slug}`;
+    const url = `https://api.rawg.io/api/games/${queryStr}`;
     superagent.get(url)
         .then(list => {
             let game = new Game(list.body);

@@ -31,3 +31,8 @@ button:hover{
     background-color: #edf2f4ff;
     cursor: pointer;
 }
+
+form button:hover{
+    background-color:#ef233cff;
+    color: #edf2f4ff;
+}
