@@ -11,6 +11,6 @@ CREATE TABLE games (
     parent_platforms VARCHAR(255),
     genres VARCHAR(255),
     trailer VARCHAR(255),
-    filters VARCHAR(255),
-    description VARCHAR(255)
+    filters VARCHAR,
+    description VARCHAR
 );
