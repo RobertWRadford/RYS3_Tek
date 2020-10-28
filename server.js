@@ -76,6 +76,7 @@ function homePage(req, res){
     superagent.get(url)
         .then(list => {
             let gamesList = list.body.results.map(game => new Game(game));
+            
             let pages = {
                 previous: list.body.previous ? page-1 : null,
                 current: page,

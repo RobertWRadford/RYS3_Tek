@@ -3,7 +3,6 @@
     <%- include('../../public/layouts/head') %>
     <%- include('../../public/layouts/header.ejs') %>
     <body>
-        <h1>HOMEPAGE</h1>
         <%- include('../../public/layouts/aside.ejs') %>
         <% gamesList.forEach((game) => { %>
             <%- include('../pages/games/homepage_game_partial.ejs', {game: game}) %>
