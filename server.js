@@ -18,8 +18,9 @@ app.use(cors());
 //ROUTES
 app.get('/', homePage);
 app.post('/detail', detailPage);
-app.post('/search', (req, res) => { // check radVal and call the correct function
-    let queryStr = inputVal.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
+app.post('/search', (inputVal, res) => { // check radVal and call the correct function
+    console.log(inputVal.body);
+    let queryStr = inputVal.body.search.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
     detailPage(queryStr, res);
 });
 app.post('/homePagination', homePage);
@@ -49,7 +50,7 @@ function homePage(req, res){
     //1. query https://api.rawg.io/api/games?order=-rating
     //2. render all games with pagination, maybe 15 at a time to match wireframe; maybe attach data tags to the sections
     //3. create internal functions to remove sections that don't fall into filter rules
-    let page = req.body.page ? req.body.page : '1';
+    let page = req.body.page ? req.body.page : 1;
     const url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
     superagent.get(url)
     .then(list => {
