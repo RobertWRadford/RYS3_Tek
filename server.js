@@ -20,7 +20,11 @@ app.get('/', homePage);
 app.post('/detail', detailPage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
     let queryStr = inputVal.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
-    detailPage(queryStr, res);
+    detailPage(req, res, queryStr);
+});
+app.post('/gamepage', (req, res) => {
+    let queryStr = req.body.slug ? req.body.slug : 'unknown';
+    detailPage(req, res, queryStr);
 });
 app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
@@ -32,6 +36,7 @@ app.get('*', () => console.log('error 404'));
 //FUNCTIONS START
 function Game(game){
     this.title = game.name ? game.name : 'Unknown';
+    this.slug = game.slug ? game.slug : 'unknown';
     this.image_url = game.background_image ?  game.background_image : 'https://image.freepik.com/free-vector/glitch-game-background_23-2148090006.jpg';
     this.rating = game.rating ? game.rating : 'No data';
     this.ratingCount = game.ratings_count ? game.ratings_count : 'No data';
@@ -49,22 +54,22 @@ function homePage(req, res){
     //1. query https://api.rawg.io/api/games?order=-rating
     //2. render all games with pagination, maybe 15 at a time to match wireframe; maybe attach data tags to the sections
     //3. create internal functions to remove sections that don't fall into filter rules
-    let page = req.body.page ? req.body.page : '1';
+    let page = req.body.page ? parseInt(req.body.page) : 1;
     const url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
     superagent.get(url)
-    .then(list => {
-        let gamesList = list.body.results.map(game => new Game(game));
+        .then(list => {
+            let gamesList = list.body.results.map(game => new Game(game));
             let pages = {
-                previous: list.body.previous ? list.body.previous : null,
+                previous: list.body.previous ? page-1 : null,
                 current: page,
-                next: list.body.next ? list.body.next : null
+                next: list.body.next ? page+1 : null
             }
             res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages});
         })
-        .catch(err => console.log('home page err'))
+        .catch(err => console.error('returned error:', err))
 }
 
-function detailPage(queryStr, res){
+function detailPage(req, res, queryStr){
     // let url=https://api.rawg.io/api/games/${queryStr};
     // if it doesnt pull an exact match redirect to nomatch
     // render page with relevant data
@@ -85,7 +90,7 @@ function favPage(req, res){
         .then(results => {
             res.render('pages/favorites.ejs', {games: results.rows});
         })
-        .catch(err => console.log('fav page error'))
+        .catch(err => console.error('returned error:', err))
 }
 
 function saveGame(req, res){
@@ -93,7 +98,7 @@ function saveGame(req, res){
     let sql = `INSERT INTO games(title, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`;
     let values = [obj.title, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.trailer, obj.filters, obj.description]
     client.query(sql, values)
-        .catch(err => console.log('save favorite error'))
+        .catch(err => console.error('returned error:', err))
 }
 //function saveItem (req, res){
     
