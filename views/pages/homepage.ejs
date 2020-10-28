@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%= include('../public/layouts/head') %>
+    <%- include('../../public/layouts/head.ejs') %>
+    <%- include('../../public/layouts/header.ejs') %>
     <body>
         <h1>HOMEPAGE</h1>
-        <% allGames.forEach(apiGame => { %>
+        <% gamesList.forEach(game => { %>
             <section>
-                <form action="/gameDetails" method="POST">
-                    <img src = "<% apiGame.background_image %>">
-                    <button type="submit"> <% apiGame.name %> </button>
+                <h1><%= game.title %></h1>
+                <img src = "<%= game.image_url %>">
+                <form action="/detail" method="POST">
+                    <fieldset>
+                        <input type="hidden" name="title" value="<%= game.title %>" required>
+                        <input type="hidden" name="image_url" value="<%= game.image_url %>" required>
+                        <input type="hidden" name="rating" value="<%= game.rating %>" required>
+                        <input type="hidden" name="ratingCount" value="<%= game.ratingCount %>" required>
+                        <input type="hidden" name="platforms" value="<%= game.platforms %>" required>
+                        <input type="hidden" name="parent_platforms" value="<%= game.parent_platforms %>" required>
+                        <input type="hidden" name="genre" value="<%= game.genre %>" required>
+                        <input type="hidden" name="trailer" value="<%= game.trailer %>" required>
+                        <input type="hidden" name="filters" value="<%= game.filters %>" required>
+                        <input type="hidden" name="description" value="<%= game.description %>" required>
+                        <button type="submit"> MORE DETAILS </button>
+                    </fieldset>
                 </form>
             </section>
         <% }) %>
+        <p> <% pages %> </p>
     </body>
-    <%= include('../public/layouts/footer') %>
+    <%- include('../../public/layouts/footer.ejs') %>
 </html>

@@ -17,6 +17,7 @@ app.use(express.static('public'));
 app.use(cors());
 //ROUTES
 app.get('/', homePage);
+app.post('/detail', detailPage);
 app.post('/search', (req, res) => { // check radVal and call the correct function
     let queryStr = inputVal.split(' ').join('-');
     if (req.body.radVal === 'games'){
@@ -27,7 +28,7 @@ app.post('/search', (req, res) => { // check radVal and call the correct functio
 });
 app.get('/favorites', favPage);
 app.get('/nomatch', notMatched);
-app.post('/schema', saveItem);
+//app.post('/schema', saveItem);
 app.delete('/del', delItem);
 app.get('*', () => console.log('error 404'));
 
@@ -52,14 +53,14 @@ function homePage(req, res){
     let page = req.body.page ? req.body.page : '1';
     const url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
     superagent.get(url)
-        .then(list => {
-            let gamesList = list.results.map(game => new Game(game));
+    .then(list => {
+        let gamesList = list.body.results.map(game => new Game(game));
             let pages = {
-                previous: list.previous ? list.previous : null,
+                previous: list.body.previous ? list.body.previous : null,
                 current: page,
-                next: list.next ? list.next : null
+                next: list.body.next ? list.body.next : null
             }
-            res.render('/homepage.ejs', {gamesList: gamesList, pages: pages});
+            res.render('../views/pages/homepage.ejs', {gamesList: gamesList, pages: pages});
         })
         .catch(err => console.log('home page err'))
 }
@@ -70,10 +71,19 @@ function pubPage(queryStr, res){
     // render page with relevant data
 }
 
-function detailPage(queryStr, res){
+function detailPage(req, res){
+    const {title, image_url, rating, ratingCount, platforms, parent_platforms, genre, trailer, filters, description} = req.body;
+    const properties = [title, image_url, rating, ratingCount, platforms, parent_platforms, genre, trailer, filters, description]
+    console.log(properties[0]);
+    if (properties){
+        res.render('../views/pages/games/gameDetails', {properties : properties});
+    }else{
+        notMatched(req,res);
+    }
     // let url=https://api.rawg.io/api/games/${queryStr};
     // if it doesnt pull an exact match redirect to nomatch
     // render page with relevant data
+
 }
 
 function notMatched(noMatch, res){

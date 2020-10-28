@@ -6,17 +6,18 @@
         <% resultsFromHomePageCallback.forEach(game => { %>
             <h2><% game.title %></h2>
             <img src = "<% game.img_url">
-            <form action="/schema" method="POST">
+            <form action="/detail" method="POST">
                 <fieldset>
-                    <input type="hidden" name="id" value="<% game.id %>" required>
                     <input type="hidden" name="title" value="<% game.title %>" required>
-                    <input type="hidden" name="publisher" value="<% game.publisher %>" required>
-                    <input type="hidden" name="description" value="<% game.description %>" required>
                     <input type="hidden" name="image_url" value="<% game.image_url %>" required>
+                    <input type="hidden" name="rating" value="<% game.rating %>" required>
+                    <input type="hidden" name="ratingCount" value="<% game.ratingCount %>" required>
+                    <input type="hidden" name="platform" value="<% game.platform %>" required>
+                    <input type="hidden" name="publisher" value="<% game.publisher %>" required>
                     <input type="hidden" name="tag" value="<% game.tag %>" required>
                     <input type="hidden" name="genre" value="<% game.genre %>" required>
-                    <input type="hidden" name="platform" value="<% game.platform %>" required>
-                    <button type="submit">SAVE GAME</button>
+                    <input type="hidden" name="description" value="<% game.description %>" required>
+                    <button type="submit">VIEW GAME DETAILS</button>
                 </fieldset>
             </form>
         <% }) %>
