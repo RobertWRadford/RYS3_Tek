@@ -55,9 +55,9 @@ function homePage(req, res){
     .then(list => {
         let gamesList = list.body.results.map(game => new Game(game));
             let pages = {
-                previous: list.previous ? page-1 : null,
+                previous: list.body.previous ? list.body.previous : null,
                 current: page,
-                next: list.next ? page+1 : null
+                next: list.body.next ? list.body.next : null
             }
             res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages});
         })
