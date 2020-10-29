@@ -97,7 +97,7 @@ function homePage(req, res){
     let page = req.body.page ? parseInt(req.body.page) : 1;
     // let platformList = req.body.platforms ? req.body.platforms : 0;
     // let genreList = req.body.genres ? req.body.genres : 0;
-    let url = `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=15&page=${page}`;
+    let url = `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=16&page=${page}`;
     let platformUrl = req.body.platforms ? typeof(req.body.platforms) == 'object' ? '&platforms='+req.body.platforms.join(',') : '&platforms='+req.body.platforms : '';
     let genreUrl = req.body.genres ? typeof(req.body.genres) == 'object' ? '&genres='+req.body.genres.join(',') : '&genres='+req.body.genres : '';
     url = url + platformUrl + genreUrl;
