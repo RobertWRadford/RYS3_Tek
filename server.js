@@ -17,6 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cors());
 app.use(methodOverride('_method'));
+
+
 //ROUTES
 app.get('/', homePage);
 app.post('/', homePage);
@@ -28,7 +30,6 @@ app.post('/gamepage', (req, res) => {
     let queryStr = req.body.slug ? req.body.slug : 'unknown';
     detailPage(req, res, queryStr);
 });
-app.post('/homePagination', homePage);
 app.get('/favorites', favPage);
 app.post('/addFavorite', saveGame);
 app.delete('/favorites', delItem);
@@ -68,15 +69,15 @@ function homePage(req, res){
     //2. render all games with pagination, maybe 15 at a time to match wireframe; maybe attach data tags to the sections
     //3. create internal functions to remove sections that don't fall into filter rules
     let page = req.body.page ? parseInt(req.body.page) : 1;
-    let url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
-    let platforms = req.body.platforms ? typeof(req.body.platforms) == 'object' ? '&platforms='+req.body.platforms.join(',') : '&platforms='+req.body.platforms : '';
-    let genres = req.body.genres ? typeof(req.body.genres) == 'object' ? '&genres='+req.body.genres.join(',') : '&genres='+req.body.genres : '';
-    url = url + platforms + genres;
-    console.log(url);
+    // let platformList = req.body.platforms ? req.body.platforms : 0;
+    // let genreList = req.body.genres ? req.body.genres : 0;
+    let url = `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=15&page=${page}`;
+    let platformUrl = req.body.platforms ? typeof(req.body.platforms) == 'object' ? '&platforms='+req.body.platforms.join(',') : '&platforms='+req.body.platforms : '';
+    let genreUrl = req.body.genres ? typeof(req.body.genres) == 'object' ? '&genres='+req.body.genres.join(',') : '&genres='+req.body.genres : '';
+    url = url + platformUrl + genreUrl;
     superagent.get(url)
         .then(list => {
             let gamesList = list.body.results.map(game => new Game(game));
-            
             let pages = {
                 previous: list.body.previous ? page-1 : null,
                 current: page,
