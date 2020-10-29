@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%- include('../../../public/layouts/head') %>
-    <%- include('../../../public/layouts/header') %>
-    <body>
-            <h1>Title: <%=game.title %> </h1>
-            <img src="<%=game.image_url %>">
-            <p>Rating: <%= game.rating %></p>
-            <p>Rating Count: <%= game.ratingCount %></p>
-            <p>Platforms: <%= game.platforms %></p>
-            <p>Parent_platforms: <%= game.parent_platforms%></p>
-            <p>Genre: <%= game.genre %></p>
-            <p>Trailer: <%= game.trailer %></p>
-            <p>Filters: <%= game.filters %></p>
-            <p>Description: <%= game.description %></p>
-            
-            <form action="/addFavorite" method="POST">
-                <fieldset>
-                    <input type="hidden" name="title" value="<%= game.title %>" required>
-                    <input type="hidden" name="slug" value="<%= game.slug %>" required>
-                    <input type="hidden" name="image_url" value="<%= game.image_url %>" required>
-                    <input type="hidden" name="rating" value="<%= game.rating %>" required>
-                    <input type="hidden" name="ratingCount" value="<%= game.ratingCount %>" required>
-                    <input type="hidden" name="platforms" value="<%= game.platforms %>" required>
-                    <input type="hidden" name="parent_platforms" value="<%= game.parent_platforms%>" required>
-                    <input type="hidden" name="genres" value="<%= game.genres %>" required>
-                    <input type="hidden" name="trailer" value="<%= game.trailer %>" required>
-                    <input type="hidden" name="filters" value="<%= game.filters %>" required>
-                    <input type="hidden" name="description" value="<%= game.description %>" required>
-                    <input type="hidden" name="slug" value="<%= game.slug %>" required>
-                    <button type="submit"> SAVE THIS GAME </button>
-                </fieldset>
-            </form>
+<%- include('../../../public/layouts/head') %>
+<%- include('../../../public/layouts/header') %>
+<%- include('../../../public/layouts/aside.ejs') %>
+
+<body>
+    <article>
+        <h1><%=game.title %> </h1>
+        <img src="<%=game.image_url %>">
+        <p>Rating: <%= game.rating %></p>
+        <p>Rating Count: <%= game.ratingCount %></p>
+        <p>Platforms: <%= game.platforms %></p>
+        <p>Parent_platforms: <%= game.parent_platforms%></p>
+        <p>Genre: <%= game.genre %></p>
+        <p>Trailer: <%= game.trailer %></p>
+        <p>Filters: <%= game.filters %></p>
+        <p>Description: <%= game.description %></p>
+
+        <form action="/addFavorite" method="POST">
+            <fieldset>
+                <input type="hidden" name="title" value="<%= game.title %>" required>
+                <input type="hidden" name="image_url" value="<%= game.image_url %>" required>
+                <input type="hidden" name="rating" value="<%= game.rating %>" required>
+                <input type="hidden" name="ratingCount" value="<%= game.ratingCount %>" required>
+                <input type="hidden" name="platforms" value="<%= game.platforms %>" required>
+                <input type="hidden" name="parent_platforms" value="<%= game.parent_platforms%>" required>
+                <input type="hidden" name="genre" value="<%= game.genre %>" required>
+                <input type="hidden" name="trailer" value="<%= game.trailer %>" required>
+                <input type="hidden" name="filters" value="<%= game.filters %>" required>
+                <input type="hidden" name="description" value="<%= game.description %>" required>
+                <input type="hidden" name="slug" value="<%= game.slug %>" required>
+                <button type="submit"> SAVE THIS GAME </button>
+            </fieldset>
+        </form>
         <% deals.forEach(deal => { %>
-            <h2>Store: <%= deal.shop %></h2>
-            <ul>
-                <li>Sale percentage: <%= deal.sale %></li>
-                <li>Sale price: <%= deal.price %></li>
-                <li>Original price: <%= deal.originalPrice %></li>
-            </ul>
+        <h2>Store: <%= deal.shop %></h2>
+        <ul>
+            <li>Sale percentage: <%= deal.sale %></li>
+            <li>Sale price: <%= deal.price %></li>
+            <li>Original price: <%= deal.originalPrice %></li>
+        </ul>
         <% }); %>
         <%- include('../../../public/layouts/footer') %>
-    </body>
-    
+    </article>
+</body>
+
 </html>
