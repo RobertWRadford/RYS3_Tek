@@ -1,4 +1,9 @@
-c
+
+/* --space-cadet: #2b2d42ff;
+--manatee: #8d99aeff;
+--alice-blue: #edf2f4ff;
+--imperial-red: #ef233cff;
+--amaranth-red: #d90429ff; */
 
 #container{
     display: flex;
@@ -22,7 +27,11 @@ section{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: #d90429ff;
+    background: #EDF2F4;
+    background: #730114;
+    background: -webkit-linear-gradient(right, #730114, #D90529);
+    background: -moz-linear-gradient(right, #730114, #D90529);
+    background: linear-gradient(to left, #730114, #D90529);
     border-radius: 6px;
     box-shadow: 5px 10px 14px;
 }
@@ -33,11 +42,69 @@ h1{
     font-family: 'Comic Dandy', sans-serif;
 }
 
-button{
+
+form input,form button{
+    padding:0.8vw;
+    font-size: 5vw;
     border: none;
-    background: #8d99aeff;
-    width: 100%;
-    padding:2vw;
-    color: white;
+    background: #edf2f4ff;
+    box-shadow: 10px 10px 8px 0px rgba(0,0,0,0.20);
 }
+
+p{
+    color: #edf2f4ff;
+    margin: 2vw;
+}
+
+
+@media (min-width:1025px){
+
+    aside{
+        position: fixed;
+        left: 0;
+        width: 15vw;
+        height:100%;
+        background: #ef233cff;
+        z-index: 1;
+    }
+
+    section{
+        width: 20%;
+        max-height: fit-content; 
+    }
+
+    .game_title{
+        font-size:1vw;
+    }
+
+    form input,form button{
+
+        margin-top: 8vw;
+        margin-bottom: 5vw;
+        padding:0.8vw;
+        border: none;
+        background: #edf2f4ff;
+        font-size: .8vw;
+    }
+
+    header{
+        width: 100%;
+        position: fixed;
+        background: #8d99aeff;
+    }
+
+    .game_button{
+        font-size: 1vw;
+    }
+
+    body{
+        margin-left: 15vw;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        overflow-x: hidden;
+    }
+}
+
+
 
