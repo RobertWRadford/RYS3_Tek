@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%= include('../public/layouts/head') %>
+    <%- include('../../../public/layouts/head') %>
+    <%- include('../../../public/layouts/header') %>
     <body>
         <h1>MY GAMES</h1>
-        <ul>
-            <% games.forEach(game => { %>
-                <li>
-                    <h2>game.title</h2>
-                    <img src = "<% game.img_url">
-                    <input type="hidden" name="title" value="game.title" required>
-                    <input type="hidden" name="publisher" value="game.publisher" required>
-                    <input type="hidden" name="description" value="game.description" required>
-                    <input type="hidden" name="tag" value="game.tag" required>
-                    <input type="hidden" name="platfrom" value="game.platform" required>
-                    <input type="hidden" name="title" value="game.title" required>
-                    <button type="submit">DETAILS</button>
-                </li>
-            <% }) %>
-        </ul> 
+        <form action="/suggest" method="post">
+            <button type="submit">GET SUGGESTIONS</button>
+        </form>
+        <% games.forEach((game) => { %>
+            <%- include('homepage_game_partial.ejs', {game: game}) %>
+            <form action="/favorites?_method=DELETE" method="post">
+                <input type="hidden" name="remove_target" value="<%= game.id %>"/>
+                <button type="submit">Remove</button>
+            </form>
+        <% }) %>
+        <%- include('../../../public/layouts/footer') %>
     </body>
-    <%= include('../public/layouts/footer') %>
 </html>
