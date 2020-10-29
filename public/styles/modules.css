@@ -4,9 +4,46 @@
 --alice-blue: #edf2f4ff;
 --imperial-red: #ef233cff;
 --amaranth-red: #d90429ff; */
+@media (max-width:959px){
+    section{
+    margin:5vw; 
+    }
 
-section{
-   margin:3vw; 
+    select{
+        width:45%;
+        margin: 2vw 0px;
+    }
+}
+
+option:hover{
+    background-color: rgb(255, 35, 71);
+}
+
+option:focus{
+    background-color: rgb(255, 35, 71);
+    text-decoration: none;
+}
+
+::-webkit-scrollbar {
+    width: 1vw;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgb(167, 2, 21)
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgb(255, 46, 81);
+    border-radius: 50px
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(255, 166, 181);
+    cursor: pointer
+  }
+
+  textarea:focus, input:focus{
+    outline: none;
 }
 
 h1{
@@ -36,6 +73,10 @@ form button:hover{
     background-color:#ef233cff;
     color: #edf2f4ff;
 }
+
+/* select:focus{
+    border:none;
+} */
 
 /* .dropdown{
         display: none;

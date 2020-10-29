@@ -12,21 +12,23 @@
         <% }) %>
     </article>
 
-    <% if(pages.previous != null) { %>
-        <form action='/homePagination' method='post'>
+    <div id="bottom">
+        <% if(pages.previous != null) { %>
+        <form class="page" action='/homePagination' method='post'>
             <input type='hidden' name='page' value='<%= pages.previous %>' />
             <button class="bottom" type='submit'><%= pages.previous %></button>
         </form>
-    <%  } %>
+        <%  } %>
 
-    <p><%= pages.current %></p>
-    
-    <% if(pages.next != null) { %>
-        <form action='/homePagination' method='post'>
+        <p class="page"><%= pages.current %></p>
+
+        <% if(pages.next != null) { %>
+        <form class="page" action='/homePagination' method='post'>
             <input type='hidden' name='page' value='<%= pages.next %>' />
             <button class="bottom" type='submit'><%= pages.next %></button>
         </form>
-    <%  } %>
+        <%  } %>
+    </div>
 
     <%- include('../../public/layouts/footer') %>
 </body>
