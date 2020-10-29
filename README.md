@@ -1,4 +1,6 @@
 # RYS3_Tek_Pro - Robert Radford, Yoni Palagashvili, Seth Mcfeeters
+In order to setup a demonstration of this app:
+-make a .env file with a PORT number and a DATABASE_URL.
 
 ## Project Description:
 

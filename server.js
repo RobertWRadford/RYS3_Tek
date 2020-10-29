@@ -1,5 +1,6 @@
 'use strict'
-//CONFIGURATIONS
+
+//START CONFIGURATIONS///////////////////////////////////////////////////////////////////////
 require('dotenv').config();
 const express = require('express');
 const pg = require('pg');
@@ -17,29 +18,52 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cors());
 app.use(methodOverride('_method'));
-//ROUTES
+//END CONFIGURATIONS///////////////////////////////////////////////////////////////////////
+
+//START ROUTES/////////////////////////////////////////////////////////////////////////////
+//GET / route on page load and load homepage
 app.get('/', homePage);
 app.post('/', homePage);
-app.post('/search', (req, res) => { // check radVal and call the correct function
+/*POST /search route when search form submitted from homepage. Then replace the spaces with 
+hyphens, any special characters with blanks, and replace ampersans with the full word and. 
+This must be done to match the search request to the query string expected by the game API.*/
+app.post('/search', (req, res) => {
     let queryStr = req.body.search.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
     detailPage(req, res, queryStr);
 });
+/*POST the /gamepage route when the details button is pressed from any game form on the home
+page. The slug property associated with the selected game object form will be used to query
+the game API to respond with the data about the specific game selected.*/
 app.post('/gamepage', (req, res) => {
     let queryStr = req.body.slug ? req.body.slug : 'unknown';
     detailPage(req, res, queryStr);
 });
-app.post('/homePagination', homePage);
-app.get('/favorites', favPage);
-app.post('/addFavorite', saveGame);
-app.delete('/favorites', delItem);
-app.get('*', () => console.log('error 404'));
 
-//FUNCTIONS START
+//POST the data from the page request from the home page and render the next home page. 
+app.post('/homePagination', homePage);
+//GET the favorites page when the user requests the favorites page in the nav bar.
+app.get('/favorites', favPage);
+/*POST the current game rendered on the current details page to the games database and 
+rerender the current gameDetails page.*/
+
+app.post('/addFavorite', saveGame);
+//DELETE on the favorites route when the delete form is submitted from the favorites page.
+app.delete('/favorites', delItem);
+//GET all routes handles errors to unmanaged routes.
+app.get('*', () => console.log('error 404'));
+app.post('/suggest', suggestGames)
+//END ROUTES///////////////////////////////////////////////////////////////////////////////
+
+//START FUNCTIONS///////////////////////////////////////////////////////////////////////// 
 let stores = [];
 superagent.get('https://www.cheapshark.com/api/1.0/stores')
     .then(list => stores = list.body.map(store => store.storeName))
     .catch(err => console.error('returned error:', err))
 
+/* The Game constructor function which creates game objects for every game that is rendered.
+The title property is used to display the title of the game, and is expected to match the
+search query of the user. On the /search route, the title is converted into a slug to query
+the game API. The slug is used to query the API as a queryStr in the /gamepage route. */
 function Game(game){
     this.title = game.name ? game.name : 'Unknown';
     this.slug = game.slug ? game.slug : 'unknown';
@@ -63,20 +87,23 @@ function Deal(store){
     this.shop = stores[storeNum-1];
 }
 
+/* This is the callback function for the homepage, which is loaded on the / route.
+It queries the game API at the current page requested. In response it constructs
+a new Game object for every game on the current page, and creates buttons to access
+the previous and next pages if they exist. The homePage function then renders a 
+homepage with the instantiated gamesList objects filling in the homepage template for
+each game. It also renders the current page with the page navigation buttons. */
 function homePage(req, res){
-    //1. query https://api.rawg.io/api/games?order=-rating
-    //2. render all games with pagination, maybe 15 at a time to match wireframe; maybe attach data tags to the sections
-    //3. create internal functions to remove sections that don't fall into filter rules
     let page = req.body.page ? parseInt(req.body.page) : 1;
-    let url = `https://api.rawg.io/api/games?order=-rating&page_size=16&page=${page}`;
-    let platforms = req.body.platforms ? typeof(req.body.platforms) == 'object' ? '&platforms='+req.body.platforms.join(',') : '&platforms='+req.body.platforms : '';
-    let genres = req.body.genres ? typeof(req.body.genres) == 'object' ? '&genres='+req.body.genres.join(',') : '&genres='+req.body.genres : '';
-    url = url + platforms + genres;
-    console.log(url);
+    // let platformList = req.body.platforms ? req.body.platforms : 0;
+    // let genreList = req.body.genres ? req.body.genres : 0;
+    let url = `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=15&page=${page}`;
+    let platformUrl = req.body.platforms ? typeof(req.body.platforms) == 'object' ? '&platforms='+req.body.platforms.join(',') : '&platforms='+req.body.platforms : '';
+    let genreUrl = req.body.genres ? typeof(req.body.genres) == 'object' ? '&genres='+req.body.genres.join(',') : '&genres='+req.body.genres : '';
+    url = url + platformUrl + genreUrl;
     superagent.get(url)
         .then(list => {
             let gamesList = list.body.results.map(game => new Game(game));
-            
             let pages = {
                 previous: list.body.previous ? page-1 : null,
                 current: page,
@@ -84,13 +111,14 @@ function homePage(req, res){
             }
             res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages});
         })
-        .catch(err => console.error('returned error:', err))
+        .catch(err => console.error('Homepage error:', err))
 }
-
+/* The queryStr (query string) is either coming in from the homepage which accesses the slug 
+property of the request body or it comes in from the search form in the requet body under 
+the search property. That string is pushed into the game api url. A request is sent to this
+API which returns the individual game information in the list (response body). The function
+will either render a gameDetails page or a nomatches page. */
 function detailPage(req, res, queryStr){
-    // let url=https://api.rawg.io/api/games/${queryStr};
-    // if it doesnt pull an exact match redirect to nomatch
-    // render page with relevant data
     const url = `https://api.rawg.io/api/games/${queryStr}`;
     console.log(stores);
     superagent.get(url)
@@ -106,39 +134,71 @@ function detailPage(req, res, queryStr){
         })
         .catch((req, res) => res.render('pages/searches/nomatches.ejs'))
 }
-
+/* This function is called by the route associated with our nav bar anchor tag MY GAMES.
+When called, favPage will request the client to query the games database. Then, with
+the results of the query, the function will render the favorites page, populated with
+the games from the database.
+    It still needs to be paginated if there are over 15 games. */
 function favPage(req, res){
-    // query database and populate all favorites, maybe paginate if over thresholds
-    // give options to delete items from favorites or go to its detail page
     const sql = 'SELECT * FROM games;';
     client.query(sql)
         .then(results => {
-            console.log(results.rows);
             res.render('pages/games/favorites.ejs', {games: results.rows});
         })
         .catch(err => console.error('returned error:', err))
 }
-
+/* This route is called by the SAVE GAME button on the gameDetails page which submits
+a form with all the game data that will be saved. The saveGame function finds the 
+information from the request, and requests the SQL client to query our data values
+and INTESERT them INTO our games datatable. Then it redirect the user to back to
+the same /gameDetails route to keep looking at the details for the current game. */
 function saveGame(req, res){
     const obj = req.body;
     let sql = `INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
     let values = [obj.title, obj.slug, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.trailer, obj.filters, obj.description]
     client.query(sql, values)
+        .then(() => {res.redirect('/')})
         .catch(err => console.error('returned error:', err))
 }
-//function saveItem (req, res){
-    
-//}
+/* This route is called by the REMOVE button on the favorites page which submits
+a form with the id for the game as a remove_target input. The delItem function
+finds the ID for the row we want to remove from the request, then removes the 
+selected item from the favorites list, and redirect user to the /favorites route. */
 function delItem(req, res){
-    // remove selected item from favorites list
-    // redirect to /favorites
     let delId = req.body.remove_target;
     let sql = `DELETE FROM games WHERE id=${delId}`;
     client.query(sql)
         .then(res.redirect('/favorites'))
-        .catch(err => console.error('returned error:', err));
+        .catch(err => console.error('Error deleting item:', err));
 }
 
+function suggestGames(req,res){
+    let sql = 'SELECT * FROM games;';
+    client.query(sql)
+        .then(favorites =>{
+            console.log(favorites.rows);
+            favorites.rows.forEach(game =>{
+                let url = `https://api.rawg.io/api/games/${game.slug}/suggested`;
+                superagent.get(url)
+                    .then(list => {
+                        let gamesList = list.body.results.map(game => new Game(game));
+                        gamesList.reduce(confidence, value => {
+                            
+                        })
+                    })
+                .catch(err => console.error('Error suggesting games:', err));
+            })
+            let pages = {
+                previous: list.body.previous ? page-1 : null,
+                current: page,
+                next: list.body.next ? page+1 : null
+            }
+        })
+    .catch(err => console.error('Error suggesting games:', err));   
+}
+//END FUNCTIONS //////////////////////////////////////////////////////////////////////////
+
+//listen to the port and log in the console to know which port is being listened to.
 client.connect().then(() => {
     app.listen(PORT, () => {
         console.log(`listening on ${PORT}`);
