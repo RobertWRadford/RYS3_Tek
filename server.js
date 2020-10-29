@@ -95,10 +95,10 @@ homepage with the instantiated gamesList objects filling in the homepage templat
 each game. It also renders the current page with the page navigation buttons. */
 function homePage(req, res){
     let page = req.body.page ? parseInt(req.body.page) : 1;
-    // let platformList = req.body.platforms ? req.body.platforms : 0;
-    // let genreList = req.body.genres ? req.body.genres : 0;
+    let platformList = req.body.platform ? req.body.platform : 0;
+    let genreList = req.body.genres ? req.body.genres : 0;
     let url = `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=16&page=${page}`;
-    let platformUrl = req.body.platforms ? typeof(req.body.platforms) == 'object' ? '&platforms='+req.body.platforms.join(',') : '&platforms='+req.body.platforms : '';
+    let platformUrl = req.body.platform ? typeof(req.body.platform) == 'object' ? '&parent_platforms='+req.body.platform.join(',') : '&parent_platforms='+req.body.platform : '';
     let genreUrl = req.body.genres ? typeof(req.body.genres) == 'object' ? '&genres='+req.body.genres.join(',') : '&genres='+req.body.genres : '';
     url = url + platformUrl + genreUrl;
     superagent.get(url)
@@ -109,7 +109,7 @@ function homePage(req, res){
                 current: page,
                 next: list.body.next ? page+1 : null
             }
-            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages});
+            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages, platforms: platformList, genres: genreList});
         })
         .catch(err => console.error('Homepage error:', err))
 }
@@ -139,7 +139,7 @@ the results of the query, the function will render the favorites page, populated
 the games from the database.
     It still needs to be paginated if there are over 15 games. */
 function favPage(req, res){
-    const sql = 'SELECT * FROM games;';
+    const sql = 'SELECT DISTINCT title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description FROM games;';
     client.query(sql)
         .then(results => {
             res.render('pages/games/favorites.ejs', {games: results.rows});
@@ -153,10 +153,11 @@ and INTESERT them INTO our games datatable. Then it redirect the user to back to
 the same /gameDetails route to keep looking at the details for the current game. */
 function saveGame(req, res){
     const obj = req.body;
+    // let sql = `IF NOT EXISTS (SELECT * FROM games WHERE slug = $2) INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
     let sql = `INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
     let values = [obj.title, obj.slug, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.trailer, obj.filters, obj.description]
     client.query(sql, values)
-        .then(() => {res.redirect('/')})
+        .then(detailPage(req, res, obj.slug))
         .catch(err => console.error('returned error:', err))
 }
 /* This route is called by the REMOVE button on the favorites page which submits
@@ -165,7 +166,7 @@ finds the ID for the row we want to remove from the request, then removes the
 selected item from the favorites list, and redirect user to the /favorites route. */
 function delItem(req, res){
     let delId = req.body.remove_target;
-    let sql = `DELETE FROM games WHERE id=${delId}`;
+    let sql = `DELETE FROM games WHERE slug='${delId}';`;
     client.query(sql)
         .then(res.redirect('/favorites'))
         .catch(err => console.error('Error deleting item:', err));
