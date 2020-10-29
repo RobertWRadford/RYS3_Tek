@@ -4,16 +4,17 @@
     <%- include('../../../public/layouts/header') %>
     <body>
         <h1>MY GAMES</h1>
-        <form action="/suggest" method="post">
-            <button type="submit">GET SUGGESTIONS</button>
-            <% games.forEach((game) => { %>
-                <%- include('homepage_game_partial.ejs', {game: game}) %>
+        <% games.forEach((game) => { %>
+            <%- include('homepage_game_partial.ejs', {game: game}) %>
+            <form action="/suggest" method="post">
+                <input type="hidden" name="slug" value="<%=game.slug %>"/>
+                <button type="submit">GET SUGGESTIONS</button>
+            </form>
                 <form action="/favorites?_method=DELETE" method="post">
                     <input type="hidden" name="remove_target" value="<%= game.id %>"/>
                     <button type="submit">Remove</button>
                 </form>
             <% }) %>
-        </form>
         <%- include('../../../public/layouts/footer') %>
     </body>
 </html>

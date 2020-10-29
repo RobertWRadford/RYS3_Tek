@@ -142,19 +142,34 @@ function delItem(req, res){
         .then(res.redirect('/favorites'))
         .catch(err => console.error('Error deleting item:', err));
 }
-
 function suggestGames(req,res){
+    console.log(req.body.slug);
+    let slug = req.body.slug;
+    let sql = `SELECT slug FROM games WHERE slug=${slug}`;
+    client.query(sql)
+        .then(game => {
+            let url = `https://api.rawg.io/api/games/${game.slug}/suggested`;
+            superagent.get(url)
+                .then(list => {
+                    let gamesList = list.body.results.map(game => new Game(game));
+                    res.render('/views/pages/games/suggestion.ejs', {suggestions:gamesList});
+                })
+            .catch(err => console.error('Error suggesting games:', err));
+        })
+    .catch(err => console.error('Error suggesting games:', err));
+}
+/* function suggestGames(req,res){
     let sql = 'SELECT * FROM games;';
     client.query(sql)
         .then(favorites =>{
-            console.log(favorites.rows);
             favorites.rows.forEach(game =>{
+                console.log(game.slug);
                 let url = `https://api.rawg.io/api/games/${game.slug}/suggested`;
                 superagent.get(url)
                     .then(list => {
                         let gamesList = list.body.results.map(game => new Game(game));
                         gamesList.reduce(confidence, value => {
-                            
+                        res.render('/views/pages/games/suggestion.ejs', {games : suggestions});    
                         })
                     })
                 .catch(err => console.error('Error suggesting games:', err));
@@ -166,7 +181,7 @@ function suggestGames(req,res){
             }
         })
     .catch(err => console.error('Error suggesting games:', err));   
-}
+} */
 //END FUNCTIONS //////////////////////////////////////////////////////////////////////////
 
 //listen to the port and log in the console to know which port is being listened to.
