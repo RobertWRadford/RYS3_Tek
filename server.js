@@ -120,7 +120,6 @@ API which returns the individual game information in the list (response body). T
 will either render a gameDetails page or a nomatches page. */
 function detailPage(req, res, queryStr){
     const url = `https://api.rawg.io/api/games/${queryStr}`;
-    console.log(stores);
     superagent.get(url)
         .then(list => {
             let game = new Game(list.body);
@@ -132,7 +131,7 @@ function detailPage(req, res, queryStr){
                 })
                 .catch(err => console.error('returned error:', err))
         })
-        .catch((req, res) => res.render('pages/searches/nomatches.ejs'))
+        .catch(err => console.error('Homepage error:', err))
 }
 /* This function is called by the route associated with our nav bar anchor tag MY GAMES.
 When called, favPage will request the client to query the games database. Then, with
@@ -171,19 +170,34 @@ function delItem(req, res){
         .then(res.redirect('/favorites'))
         .catch(err => console.error('Error deleting item:', err));
 }
-
 function suggestGames(req,res){
+    let id = req.body.id;
+    console.log(id);
+    let sql = `SELECT slug FROM games WHERE id=${id}`;
+    client.query(sql)
+        .then(game => {
+            let url = `https://api.rawg.io/api/games/${game.slug}/suggested`;
+            superagent.get(url)
+                .then(list => {
+                    let suggestionsList = list.body.results.map(game => new Game(game));
+                    res.render('pages/games/suggestion.ejs', {suggestions:suggestionsList});
+                })
+            .catch(err => console.error('Error suggesting games:', err));
+        })
+    .catch(err => console.error('Error suggesting games:', err));
+}
+/* function suggestGames(req,res){
     let sql = 'SELECT * FROM games;';
     client.query(sql)
         .then(favorites =>{
-            console.log(favorites.rows);
             favorites.rows.forEach(game =>{
+                console.log(game.slug);
                 let url = `https://api.rawg.io/api/games/${game.slug}/suggested`;
                 superagent.get(url)
                     .then(list => {
                         let gamesList = list.body.results.map(game => new Game(game));
                         gamesList.reduce(confidence, value => {
-                            
+                        res.render('/views/pages/games/suggestion.ejs', {games : suggestions});    
                         })
                     })
                 .catch(err => console.error('Error suggesting games:', err));
@@ -195,7 +209,7 @@ function suggestGames(req,res){
             }
         })
     .catch(err => console.error('Error suggesting games:', err));   
-}
+} */
 //END FUNCTIONS //////////////////////////////////////////////////////////////////////////
 
 //listen to the port and log in the console to know which port is being listened to.
