@@ -68,7 +68,7 @@ function homePage(req, res){
     //2. render all games with pagination, maybe 15 at a time to match wireframe; maybe attach data tags to the sections
     //3. create internal functions to remove sections that don't fall into filter rules
     let page = req.body.page ? parseInt(req.body.page) : 1;
-    let url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
+    let url = `https://api.rawg.io/api/games?order=-rating&page_size=16&page=${page}`;
     let platforms = req.body.platforms ? typeof(req.body.platforms) == 'object' ? '&platforms='+req.body.platforms.join(',') : '&platforms='+req.body.platforms : '';
     let genres = req.body.genres ? typeof(req.body.genres) == 'object' ? '&genres='+req.body.genres.join(',') : '&genres='+req.body.genres : '';
     url = url + platforms + genres;
