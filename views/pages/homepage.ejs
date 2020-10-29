@@ -4,21 +4,22 @@
     <%- include('../../public/layouts/header.ejs') %>
     <body>
         <%- include('../../public/layouts/aside.ejs') %>
+
         <% gamesList.forEach((game) => { %>
             <%- include('../pages/games/homepage_game_partial.ejs', {game: game}) %>
         <% }) %>
-        <form action='/homePagination' method='post'>
+        <% if(pages.previous != null) { %>
+            <form action='/' method='post'>
             <input type='hidden' name='page' value='<%= pages.previous %>'/>
             <button type='submit'><%= pages.previous %></button>
-        </form>
-        <% if(pages.previous != null) { %>
+            </form>
         <%  } %>
         <p><%= pages.current %></p>
-        <form action='/homePagination' method='post'>
+        <% if(pages.next != null) { %>
+            <form action='/' method='post'>
             <input type='hidden' name='page' value='<%= pages.next %>'/>
             <button type='submit'><%= pages.next %></button>
-        </form>
-        <% if(pages.next != null) { %>
+            </form>
         <%  } %>
         <%- include('../../public/layouts/footer') %>
     </body>
