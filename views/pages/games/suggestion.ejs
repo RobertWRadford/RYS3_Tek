@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../../public/layouts/head') %>
+    <%- include('../../public/layouts/header.ejs') %>
+    <body>
+        <h1>SUGGESTIONS</h1>
+        <%- include('../../public/layouts/aside.ejs') %>
+        <% suggestionsList.forEach((game) => { %>
+            <%- include('../pages/games/homepage_game_partial.ejs', {game: game}) %>
+        <% }) %>
+        <form action='/suggestPagination' method='post'>
+            <input type='hidden' name='page' value='<%= pages.previous %>'/>
+            <button type='submit'><%= pages.previous %></button>
+        </form>
+        <% if(pages.previous != null) { %>
+        <%  } %>
+        <p><%= pages.current %></p>
+        <form action='/suggestPagination' method='post'>
+            <input type='hidden' name='page' value='<%= pages.next %>'/>
+            <button type='submit'><%= pages.next %></button>
+        </form>
+        <% if(pages.next != null) { %>
+        <%  } %>
+        <%- include('../../public/layouts/footer') %>
+    </body>
+    <%- include('../../public/layouts/footer.ejs') %>
+</html>

@@ -48,6 +48,7 @@ app.post('/addFavorite', saveGame);
 app.delete('/favorites', delItem);
 //GET all routes handles errors to unmanaged routes.
 app.get('*', () => console.log('error 404'));
+app.post('/suggest', suggestGames)
 //END ROUTES///////////////////////////////////////////////////////////////////////////////
 
 //START FUNCTIONS///////////////////////////////////////////////////////////////////////// 
@@ -113,7 +114,6 @@ function favPage(req, res){
     const sql = 'SELECT * FROM games;';
     client.query(sql)
         .then(results => {
-            console.log(results.rows);
             res.render('pages/games/favorites.ejs', {games: results.rows});
         })
         .catch(err => console.error('returned error:', err))
@@ -140,7 +140,32 @@ function delItem(req, res){
     let sql = `DELETE FROM games WHERE id=${delId}`;
     client.query(sql)
         .then(res.redirect('/favorites'))
-        .catch(err => console.error('returned error:', err));
+        .catch(err => console.error('Error deleting item:', err));
+}
+
+function suggestGames(req,res){
+    let sql = 'SELECT * FROM games;';
+    client.query(sql)
+        .then(favorites =>{
+            console.log(favorites.rows);
+            favorites.rows.forEach(game =>{
+                let url = `https://api.rawg.io/api/games/${game.slug}/suggested`;
+                superagent.get(url)
+                    .then(list => {
+                        let gamesList = list.body.results.map(game => new Game(game));
+                        gamesList.reduce(confidence, value => {
+                            
+                        })
+                    })
+                .catch(err => console.error('Error suggesting games:', err));
+            })
+            let pages = {
+                previous: list.body.previous ? page-1 : null,
+                current: page,
+                next: list.body.next ? page+1 : null
+            }
+        })
+    .catch(err => console.error('Error suggesting games:', err));   
 }
 //END FUNCTIONS //////////////////////////////////////////////////////////////////////////
 
