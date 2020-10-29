@@ -5,6 +5,7 @@
 
 <body>
     <%- include('../../public/layouts/aside.ejs') %>
+
     <article>
         <% gamesList.forEach((game) => { %>
         <%- include('../pages/games/homepage_game_partial.ejs', {game: game}) %>
@@ -29,5 +30,28 @@
 
     <%- include('../../public/layouts/footer') %>
 </body>
+<script>
+    let options = document.getElementsByTagName('option');
+    let platformList = '<%= platforms %>'.split(',');
+    if(platformList) {
+        platformList.forEach(platform => {
+            for(let i = 0; i < options.length; i++){
+                if (options[i].value == platform){
+                    options[i].selected = true;
+                }
+            }
+        })
+    }
+    let genreList = '<%= genres %>'.split(',');
+    if(genreList) {
+        genreList.forEach(genre => {
+            for(let i = 0; i < options.length; i++){
+                if (options[i].value == genre){
+                    options[i].selected = true;
+                }
+            }
+        })
+    }
+</script>
 
 </html>
