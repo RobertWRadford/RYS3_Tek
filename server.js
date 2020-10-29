@@ -23,6 +23,7 @@ app.use(methodOverride('_method'));
 //START ROUTES/////////////////////////////////////////////////////////////////////////////
 //GET / route on page load and load homepage
 app.get('/', homePage);
+app.post('/', homePage);
 /*POST /search route when search form submitted from homepage. Then replace the spaces with 
 hyphens, any special characters with blanks, and replace ampersans with the full word and. 
 This must be done to match the search request to the query string expected by the game API.*/
@@ -37,12 +38,14 @@ app.post('/gamepage', (req, res) => {
     let queryStr = req.body.slug ? req.body.slug : 'unknown';
     detailPage(req, res, queryStr);
 });
+
 //POST the data from the page request from the home page and render the next home page. 
 app.post('/homePagination', homePage);
 //GET the favorites page when the user requests the favorites page in the nav bar.
 app.get('/favorites', favPage);
 /*POST the current game rendered on the current details page to the games database and 
 rerender the current gameDetails page.*/
+
 app.post('/addFavorite', saveGame);
 //DELETE on the favorites route when the delete form is submitted from the favorites page.
 app.delete('/favorites', delItem);
@@ -52,6 +55,11 @@ app.post('/suggest', suggestGames)
 //END ROUTES///////////////////////////////////////////////////////////////////////////////
 
 //START FUNCTIONS///////////////////////////////////////////////////////////////////////// 
+let stores = [];
+superagent.get('https://www.cheapshark.com/api/1.0/stores')
+    .then(list => stores = list.body.map(store => store.storeName))
+    .catch(err => console.error('returned error:', err))
+
 /* The Game constructor function which creates game objects for every game that is rendered.
 The title property is used to display the title of the game, and is expected to match the
 search query of the user. On the /search route, the title is converted into a slug to query
@@ -70,6 +78,15 @@ function Game(game){
     this.description = game.description_raw ? game.description_raw : 'No data';
     this.gameID = game.id ? game.id : 4828;
 }
+
+function Deal(store){
+    let storeNum = store.storeID ? store.storeID : 1;
+    this.price = store.salePrice ? store.salePrice : 'Unknown';
+    this.originalPrice = store.normalPrice ? store.normalPrice : 'Unknown';
+    this.sale = store.savings ? store.savings.slice(0, 2) : 'Unknown';
+    this.shop = stores[storeNum-1];
+}
+
 /* This is the callback function for the homepage, which is loaded on the / route.
 It queries the game API at the current page requested. In response it constructs
 a new Game object for every game on the current page, and creates buttons to access
@@ -78,7 +95,12 @@ homepage with the instantiated gamesList objects filling in the homepage templat
 each game. It also renders the current page with the page navigation buttons. */
 function homePage(req, res){
     let page = req.body.page ? parseInt(req.body.page) : 1;
-    const url = `https://api.rawg.io/api/games?order=-rating&page_size=15&page=${page}`;
+    // let platformList = req.body.platforms ? req.body.platforms : 0;
+    // let genreList = req.body.genres ? req.body.genres : 0;
+    let url = `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=15&page=${page}`;
+    let platformUrl = req.body.platforms ? typeof(req.body.platforms) == 'object' ? '&platforms='+req.body.platforms.join(',') : '&platforms='+req.body.platforms : '';
+    let genreUrl = req.body.genres ? typeof(req.body.genres) == 'object' ? '&genres='+req.body.genres.join(',') : '&genres='+req.body.genres : '';
+    url = url + platformUrl + genreUrl;
     superagent.get(url)
         .then(list => {
             let gamesList = list.body.results.map(game => new Game(game));
@@ -101,9 +123,15 @@ function detailPage(req, res, queryStr){
     superagent.get(url)
         .then(list => {
             let game = new Game(list.body);
-            res.render('pages/games/gameDetails.ejs', {game: game});
+            let url2 = `https://www.cheapshark.com/api/1.0/deals?title=${game.slug}&exact=1`;
+            superagent.get(url2)
+                .then(result => {
+                    let deals = result.body.map(store => new Deal(store));
+                    res.render('pages/games/gameDetails.ejs', {game: game, deals: deals});
+                })
+                .catch(err => console.error('returned error:', err))
         })
-        .catch((req, res) => res.render('pages/searches/nomatches.ejs'))
+        .catch(err => console.error('Homepage error:', err))
 }
 /* This function is called by the route associated with our nav bar anchor tag MY GAMES.
 When called, favPage will request the client to query the games database. Then, with
@@ -143,16 +171,16 @@ function delItem(req, res){
         .catch(err => console.error('Error deleting item:', err));
 }
 function suggestGames(req,res){
-    console.log(req.body.slug);
-    let slug = req.body.slug;
-    let sql = `SELECT slug FROM games WHERE slug=${slug}`;
+    let id = req.body.id;
+    console.log(id);
+    let sql = `SELECT slug FROM games WHERE id=${id}`;
     client.query(sql)
         .then(game => {
             let url = `https://api.rawg.io/api/games/${game.slug}/suggested`;
             superagent.get(url)
                 .then(list => {
-                    let gamesList = list.body.results.map(game => new Game(game));
-                    res.render('/views/pages/games/suggestion.ejs', {suggestions:gamesList});
+                    let suggestionsList = list.body.results.map(game => new Game(game));
+                    res.render('pages/games/suggestion.ejs', {suggestions:suggestionsList});
                 })
             .catch(err => console.error('Error suggesting games:', err));
         })

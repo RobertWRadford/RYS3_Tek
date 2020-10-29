@@ -1,5 +1,5 @@
 <section>
-    <h1><%= game.title %></h1>
+    <h1 class="game_title"><%= game.title %></h1>
     <img src = "<%= game.image_url %>">
     <form action="/gamepage" method="POST">
         <fieldset>
@@ -15,7 +15,7 @@
             <input type="hidden" name="description" value="<%= game.description %>" required>
             <input type="hidden" name="gameID" value="<%= game.gameID %>" required>
             <input type="hidden" name="slug" value="<%= game.slug %>" required>
-            <button type="submit"> MORE DETAILS </button>
+            <button class= "game_button" type="submit"> MORE DETAILS </button>
         </fieldset>
     </form>
 </section>

@@ -7,14 +7,14 @@
         <% games.forEach((game) => { %>
             <%- include('homepage_game_partial.ejs', {game: game}) %>
             <form action="/suggest" method="post">
-                <input type="hidden" name="slug" value="<%=game.slug %>"/>
+                <input type="hidden" name="id" value="<%= game.id %>"/>
                 <button type="submit">GET SUGGESTIONS</button>
             </form>
-                <form action="/favorites?_method=DELETE" method="post">
-                    <input type="hidden" name="remove_target" value="<%= game.id %>"/>
-                    <button type="submit">Remove</button>
-                </form>
-            <% }) %>
+            <form action="/favorites?_method=DELETE" method="post">
+                <input type="hidden" name="remove_target" value="<%= game.id %>"/>
+                <button type="submit">Remove</button>
+            </form>
+        <% }) %>
         <%- include('../../../public/layouts/footer') %>
     </body>
 </html>
