@@ -16,6 +16,8 @@
         <% if(pages.previous != null) { %>
         <form class="page" action='/homePagination' method='post'>
             <input type='hidden' name='page' value='<%= pages.previous %>' />
+            <input type="hidden" name='platform' value='<%= platforms %>' />
+            <input type='hidden' name='genres' value='<%= genres %>' />
             <button class="bottom" type='submit'><%= pages.previous %></button>
         </form>
         <%  } %>
@@ -25,6 +27,8 @@
         <% if(pages.next != null) { %>
         <form class="page" action='/homePagination' method='post'>
             <input type='hidden' name='page' value='<%= pages.next %>' />
+            <input type="hidden" name='platform' value='<%= platforms %>' />
+            <input type='hidden' name='genres' value='<%= genres %>' />
             <button class="bottom" type='submit'><%= pages.next %></button>
         </form>
         <%  } %>
