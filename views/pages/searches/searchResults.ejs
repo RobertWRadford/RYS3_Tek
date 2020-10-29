@@ -4,7 +4,7 @@
     <body>
         <h1>Searches</h1>
         <% resultsFromHomePageCallback.forEach(game => { %>
-            <h2><% game.title %></h2>
+            <h2 class="game_title"><% game.title %></h2>
             <img src = "<% game.img_url">
             <form action="/detail" method="POST">
                 <fieldset>

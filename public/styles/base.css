@@ -56,7 +56,54 @@ p{
     margin: 2vw;
 }
 
-@media all and (max-width: 699px){
+
+@media (min-width:1025px){
+
+    aside{
+        position: fixed;
+        left: 0;
+        width: 15vw;
+        height:100%;
+        background: #ef233cff;
+        z-index: 1;
+    }
+
+    section{
+        width: 20%;
+        max-height: fit-content; 
+    }
+
+    .game_title{
+        font-size:1vw;
+    }
+
+    form input,form button{
+
+        margin-top: 8vw;
+        margin-bottom: 5vw;
+        padding:0.8vw;
+        border: none;
+        background: #edf2f4ff;
+        font-size: .8vw;
+    }
+
+    header{
+        width: 100%;
+        position: fixed;
+        background: #8d99aeff;
+    }
+
+    .game_button{
+        font-size: 1vw;
+    }
+
+    body{
+        margin-left: 15vw;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        overflow-x: hidden;
+    }
 }
 
 
