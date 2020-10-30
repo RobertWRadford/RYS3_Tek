@@ -4,45 +4,85 @@
 <%- include('../../../public/layouts/aside.ejs') %>
 
 <body>
-    <%- include('../../../public/layouts/aside.ejs') %>
-    <form id="save-button" action="/addFavorite" method="POST">
-        <fieldset>
-            <input type="hidden" name="title" value="<%= game.title %>" required>
-            <input type="hidden" name="image_url" value="<%= game.image_url %>" required>
-            <input type="hidden" name="rating" value="<%= game.rating %>" required>
-            <input type="hidden" name="ratingCount" value="<%= game.ratingCount %>" required>
-            <input type="hidden" name="platforms" value="<%= game.platforms %>" required>
-            <input type="hidden" name="parent_platforms" value="<%= game.parent_platforms%>" required>
-            <input type="hidden" name="genres" value="<%= game.genres %>" required>
-            <input type="hidden" name="trailer" value="<%= game.trailer %>" required>
-            <input type="hidden" name="filters" value="<%= game.filters %>" required>
-            <input type="hidden" name="description" value="<%= game.description %>" required>
-            <input type="hidden" name="slug" value="<%= game.slug %>" required>
-            <button type="submit"> SAVE THIS GAME </button>
-        </fieldset>
-    </form>
-    <article>
+    <article id='detailPage'>
         <h1><%=game.title %> </h1>
-        <img src="<%=game.image_url %>">
-        <p>Rating: <%= game.rating %></p>
-        <p>Rating Count: <%= game.ratingCount %></p>
-        <p>Platforms: <%= game.platforms %></p>
-        <p>Parent_platforms: <%= game.parent_platforms%></p>
-        <p>Genres: <%= game.genres %></p>
-        <p>Trailer: <%= game.trailer %></p>
-        <p>Filters: <%= game.filters %></p>
-        <p>Description: <%= game.description %></p>
+        <div class='slideshow-container'>
+            <div class="mySlides fade">
+                <img src="<%=game.image_url %>">
+            </div>
+            <div class="mySlides fade">
+                <video controls><source src='<%= game.trailer %>'></video>
+            </div>
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
 
-        <% deals.forEach(deal => { %>
-        <h2>Store: <%= deal.shop %></h2>
-        <ul>
-            <li>Sale percentage: <%= deal.sale %></li>
-            <li>Sale price: <%= deal.price %></li>
-            <li>Original price: <%= deal.originalPrice %></li>
-        </ul>
-        <% }); %>
-        <%- include('../../../public/layouts/footer') %>
+        <form id='saveFavorite' action="/addFavorite" method="POST">
+            <fieldset>
+                <input type="hidden" name="title" value="<%= game.title %>" required>
+                <input type="hidden" name="image_url" value="<%= game.image_url %>" required>
+                <input type="hidden" name="rating" value="<%= game.rating %>" required>
+                <input type="hidden" name="ratingCount" value="<%= game.ratingCount %>" required>
+                <input type="hidden" name="platforms" value="<%= game.platforms %>" required>
+                <input type="hidden" name="parent_platforms" value="<%= game.parent_platforms%>" required>
+                <input type="hidden" name="genre" value="<%= game.genre %>" required>
+                <input type="hidden" name="trailer" value="<%= game.trailer %>" required>
+                <input type="hidden" name="filters" value="<%= game.filters %>" required>
+                <input type="hidden" name="description" value="<%= game.description %>" required>
+                <input type="hidden" name="slug" value="<%= game.slug %>" required>
+                <button type="submit"> SAVE THIS GAME </button>
+            </fieldset>
+        </form>
+
+        <section id='gameDetails'>
+            <p>Description:<br><br><%= game.description %></p>
+            <p>Genres:<br><br><%= game.genres %></p>
+            <p>Platforms:<br><br><%= game.platforms %></p>
+            <p>Rating:<br><br><%= game.rating %> / 5</p>
+            <p>Reviews:<br><br><%= game.ratingCount %></p>
+            
+        </section>
+
+        <section id='dealDetails'> 
+            <% deals.forEach(deal => { %>
+                <section class='storeInfo'> 
+                    <h2>Store: <%= deal.shop %></h2><br>
+                    <ul>
+                        <li><%= deal.sale %>% off</li><br>
+                        <li>Currently <%= deal.price %><br>from <%= deal.originalPrice %></li>
+                    </ul><br><br>
+                </section>
+            <% }); %>
+        </section>
     </article>
+    <%- include('../../../public/layouts/footer') %>
 </body>
 
+<script>
+    // https://www.w3schools.com/howto/howto_js_slideshow.asp
+    var slideIndex = 1;
+    showSlides(slideIndex);
+
+    // Next/previous controls
+    function plusSlides(n) {
+    showSlides(slideIndex += n);
+    }
+
+    // Thumbnail image controls
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+        var i;
+        var slides = document.getElementsByClassName("mySlides");
+        if (n > slides.length) {slideIndex = 1}
+        if (n < 1) {slideIndex = slides.length}
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        slides[slideIndex-1].style.display = "block";
+        dots[slideIndex-1].className += " active";
+    }
+</script>
 </html>
