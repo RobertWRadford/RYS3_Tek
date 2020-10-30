@@ -177,7 +177,7 @@ margin-bottom: .3vw;
 
     .favoriteArticle{
         padding-top: 0px;
-        min-height: 82vh;
+        min-height: 80vw;
     }
     .favoriteSection{
         display: flex;
