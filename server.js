@@ -171,13 +171,14 @@ function delItem(req, res){
         .then(res.redirect('/favorites'))
         .catch(err => console.error('Error deleting item:', err));
 }
+
 function suggestGames(req,res){
     let id = req.body.id;
-    console.log(id);
     let sql = `SELECT slug FROM games WHERE id=${id}`;
     client.query(sql)
         .then(game => {
-            let url = `https://api.rawg.io/api/games/${game.slug}/suggested`;
+            console.log(game.rows[0].slug);
+            let url = `https://api.rawg.io/api/games/${game.rows[0].slug}/suggested`;
             superagent.get(url)
                 .then(list => {
                     let suggestionsList = list.body.results.map(game => new Game(game));

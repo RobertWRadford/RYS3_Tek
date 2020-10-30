@@ -15,9 +15,9 @@ CREATE TABLE games (
     description VARCHAR
 );
 
-DROP TABLE IF EXISTS suggested;
+DROP TABLE IF EXISTS suggestions;
 
-CREATE TABLE suggested (
+CREATE TABLE suggestions (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255),
     slug varchar(255),

@@ -52,7 +52,7 @@ section{
     width: 90%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     background: #EDF2F4;
     background: #730114;
@@ -83,7 +83,6 @@ p{
     color: #edf2f4ff;
     margin: 2vw;
 }
-
 .game_title {
     font-family: 'Death Star', sans-serif;
     margin-bottom: .3vw;
@@ -93,9 +92,19 @@ font-family: 'Death Star', sans-serif;
 margin-bottom: .3vw;
 }
 
+.favoritesButton{
+    margin-bottom:5%;
+
+.page, .page > button{
+    font-size: 4vw;
+    margin: 0;
+    margin-right: 5%;
+    margin-bottom: 5%;
+    display: inline-block;
+}
 
 @media (min-width:960px){
-
+    
     aside{
         position: fixed;
         left: 0;
@@ -109,7 +118,7 @@ margin-bottom: .3vw;
         width: 17%; 
         margin: 3vw;
     }
-
+    
     form input,form button{
         margin-top: 8vw;
         margin-bottom: 5vw;
@@ -127,7 +136,7 @@ margin-bottom: .3vw;
         font-size: .8vw;
         background: #8d99aeff;
     }
-
+    
     .game_button{
         font-size: 1vw;
         margin:0;
@@ -135,7 +144,7 @@ margin-bottom: .3vw;
     .game_title{
         font-size: 2vw;
     }
-
+    
     article{
         padding-top: 25vh;
         margin-left: 15vw;
@@ -144,7 +153,7 @@ margin-bottom: .3vw;
         flex-direction: row;
         justify-content: space-around;
     }
-
+    
     body{
         overflow-x: hidden;
     }
@@ -157,7 +166,7 @@ margin-bottom: .3vw;
         margin-left: 15vw;
         font-size: 1.5vw;
     }
-
+    
     select{
         width: 85%;
         margin-top:2vw;
@@ -165,6 +174,33 @@ margin-bottom: .3vw;
     #brand{
         margin-left: 15vw;
     }
+  
+    .favoriteArticle{
+        padding-top: 0px;
+    }
+    .favoriteSection{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items:center;
+        background-color: none;
+        width: 25%;
+    }
+    .favorites{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items:center;
+        width: 1000%;
+        box-shadow: none;
+    }
+    .favoritesButton{
+        max-height: 1%;
+        margin:5%;
+        margin-left:0%;
+    }
+    .fa-trash{
+        padding:0.55vw;
 
     #detailPage > section {
         font-size: 1.5vw;
