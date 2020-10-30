@@ -3,11 +3,12 @@
     <%- include('../../../public/layouts/head') %>
     <%- include('../../../public/layouts/header') %>
     <body>
-        <h1>SUGGESTIONS</h1>
         <%- include('../../../public/layouts/aside.ejs') %>
-        <% suggestions.forEach((game) => { %>
-            <%- include('homepage_game_partial.ejs', {game: game}) %>
-        <% }) %>
+        <article>
+            <% suggestions.forEach((game) => { %>
+                <%- include('homepage_game_partial.ejs', {game: game}) %>
+            <% }) %>
+            </article>
         <%- include('../../../public/layouts/footer') %>
     </body>
 </html>

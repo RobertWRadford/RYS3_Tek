@@ -173,18 +173,12 @@ function delItem(req, res){
 }
 
 function suggestGames(req,res){
-    let id = req.body.id;
-    let sql = `SELECT slug FROM games WHERE id=${id}`;
-    client.query(sql)
-        .then(game => {
-            console.log(game.rows[0].slug);
-            let url = `https://api.rawg.io/api/games/${game.rows[0].slug}/suggested`;
-            superagent.get(url)
-                .then(list => {
-                    let suggestionsList = list.body.results.map(game => new Game(game));
-                    res.render('pages/games/suggestion.ejs', {suggestions:suggestionsList});
-                })
-            .catch(err => console.error('Error suggesting games:', err));
+    let gameSlug = req.body.slug;
+    let url = `https://api.rawg.io/api/games/${gameSlug}/suggested`;
+    superagent.get(url)
+        .then(list => {
+            let suggestionsList = list.body.results.map(game => new Game(game));
+            res.render('pages/games/suggestion.ejs', {suggestions:suggestionsList});
         })
     .catch(err => console.error('Error suggesting games:', err));
 }
