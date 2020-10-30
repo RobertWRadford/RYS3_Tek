@@ -1,6 +1,8 @@
-<section>
+<section class="homepage_item">
     <h1 class="game_title"><%= game.title %></h1>
-    <img src = "<%= game.image_url %>">
+    <div>
+        <img src = "<%= game.image_url %>">
+    </div>
     <form action="/gamepage" method="POST">
         <fieldset>
             <input type="hidden" name="title" value="<%= game.title %>" required>
@@ -9,7 +11,7 @@
             <input type="hidden" name="ratingCount" value="<%= game.ratingCount %>" required>
             <input type="hidden" name="platforms" value="<%= game.platforms %>" required>
             <input type="hidden" name="parent_platforms" value="<%= game.parent_platforms %>" required>
-            <input type="hidden" name="genre" value="<%= game.genre %>" required>
+            <input type="hidden" name="genres" value="<%= game.genres %>" required>
             <input type="hidden" name="trailer" value="<%= game.trailer %>" required>
             <input type="hidden" name="filters" value="<%= game.filters %>" required>
             <input type="hidden" name="description" value="<%= game.description %>" required>

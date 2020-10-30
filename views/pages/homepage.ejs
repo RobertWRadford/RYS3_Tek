@@ -5,29 +5,59 @@
 
 <body>
     <%- include('../../public/layouts/aside.ejs') %>
+
     <article>
         <% gamesList.forEach((game) => { %>
         <%- include('../pages/games/homepage_game_partial.ejs', {game: game}) %>
         <% }) %>
     </article>
 
-    <% if(pages.previous != null) { %>
-        <form action='/homePagination' method='post'>
+    <div id="bottom">
+        <% if(pages.previous != null) { %>
+        <form class="page" action='/homePagination' method='post'>
             <input type='hidden' name='page' value='<%= pages.previous %>' />
+            <input type="hidden" name='platform' value='<%= platforms %>' />
+            <input type='hidden' name='genres' value='<%= genres %>' />
             <button class="bottom" type='submit'><%= pages.previous %></button>
         </form>
-    <%  } %>
+        <%  } %>
 
-    <p><%= pages.current %></p>
-    
-    <% if(pages.next != null) { %>
-        <form action='/homePagination' method='post'>
+        <p class="page"><%= pages.current %></p>
+
+        <% if(pages.next != null) { %>
+        <form class="page" action='/homePagination' method='post'>
             <input type='hidden' name='page' value='<%= pages.next %>' />
+            <input type="hidden" name='platform' value='<%= platforms %>' />
+            <input type='hidden' name='genres' value='<%= genres %>' />
             <button class="bottom" type='submit'><%= pages.next %></button>
         </form>
-    <%  } %>
+        <%  } %>
+    </div>
 
     <%- include('../../public/layouts/footer') %>
 </body>
+<script>
+    let options = document.getElementsByTagName('option');
+    let platformList = '<%= platforms %>'.split(',');
+    if(platformList) {
+        platformList.forEach(platform => {
+            for(let i = 0; i < options.length; i++){
+                if (options[i].value == platform){
+                    options[i].selected = true;
+                }
+            }
+        })
+    }
+    let genreList = '<%= genres %>'.split(',');
+    if(genreList) {
+        genreList.forEach(genre => {
+            for(let i = 0; i < options.length; i++){
+                if (options[i].value == genre){
+                    options[i].selected = true;
+                }
+            }
+        })
+    }
+</script>
 
 </html>
