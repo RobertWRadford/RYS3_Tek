@@ -174,7 +174,7 @@ margin-bottom: .3vw;
     #brand{
         margin-left: 15vw;
     }
-  
+
     .favoriteArticle{
         padding-top: 0px;
     }
@@ -201,6 +201,7 @@ margin-bottom: .3vw;
     }
     .fa-trash{
         padding:0.55vw;
+    }
 
     #detailPage > section {
         font-size: 1.5vw;
