@@ -92,7 +92,8 @@ form button:hover{
 }
 
 #detailPage > h1 {
-    font-size: 8vw;
+    font-size: 6vw;
+    font-family: 'Death Star', sans-serif;
     margin-bottom: 2%;
     background-color: rgba(86, 90, 132, .8);
     border: 3px solid white;
@@ -234,6 +235,5 @@ form button:hover{
 }
 
 .homepage_item > form{
-
     width:100%;
 }
