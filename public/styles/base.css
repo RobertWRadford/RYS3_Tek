@@ -74,6 +74,13 @@ p{
     margin: 2vw;
 }
 
+.page, .page > button{
+    font-size: 4vw;
+    margin: 0;
+    margin-right: 5%;
+    margin-bottom: 5%;
+    display: inline-block;
+}
 
 @media (min-width:960px){
 
@@ -130,11 +137,6 @@ p{
 
     body{
         overflow-x: hidden;
-    }
-    
-    .page{
-        margin-top: 0px;
-        display: inline-block;
     }
 
     #bottom{
