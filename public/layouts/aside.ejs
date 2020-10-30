@@ -1,8 +1,10 @@
 <aside>
+
     <form action="/search" method="post">
         <fieldset>
             <input id="bar" type="text" name="search" placeholder="Search..." minlength="1" required><button><i id="mag" class="fas fa fa-search"></i></button>
         </fieldset>
+        <a href="/views/pages/games/favorites.ejs">text</a>
     </form>
     <form class="filter" action='/' method='post'>
         <select id="platform" name="platform" multiple size=8>
@@ -42,6 +44,6 @@
             <option value="educational">Educational</option>
             <option value="card">Card</option>
         </select>
-        <button type='submit'>Filter</button>
+        <button id="filter" type='submit'>Filter</button>
     </form>
 </aside>

@@ -13,6 +13,14 @@
         width:45%;
         margin: 2vw 0px;
     }
+
+    form input{
+        width: 75%;
+    }
+
+        form button{
+            width: 13.4%
+        }
 }
 
 option:hover{
