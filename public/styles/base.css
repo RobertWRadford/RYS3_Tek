@@ -62,10 +62,12 @@ p{
     color: #edf2f4ff;
     margin: 2vw;
 }
-
+.favoritesButton{
+    margin-bottom:5%;
+}
 
 @media (min-width:960px){
-
+    
     aside{
         position: fixed;
         left: 0;
@@ -74,14 +76,14 @@ p{
         background: #ef233cff;
         z-index: 1;
     }
-
+    
     
 
     section{
         width: 17%; 
         margin: 3vw;
     }
-
+    
     form input,form button{
         margin-top: 8vw;
         margin-bottom: 5vw;
@@ -99,7 +101,7 @@ p{
         font-size: .8vw;
         background: #8d99aeff;
     }
-
+    
     .game_button{
         font-size: 1vw;
         margin:0;
@@ -107,7 +109,7 @@ p{
     .game_title{
         font-size: 2vw;
     }
-
+    
     article{
         padding-top: 25vh;
         margin-left: 15vw;
@@ -116,7 +118,7 @@ p{
         flex-direction: row;
         justify-content: space-around;
     }
-
+    
     body{
         overflow-x: hidden;
     }
@@ -133,13 +135,40 @@ p{
     footer{
         margin-left: 15vw;
     }
-
+    
     select{
         width: 85%;
         margin-top:2vw;
     }
     #brand{
         margin-left: 15vw;
+    }
+    .favoriteArticle{
+        padding-top: 0px;
+    }
+    .favoriteSection{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items:center;
+        background-color: none;
+        width: 25%;
+    }
+    .favorites{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items:center;
+        width: 1000%;
+        box-shadow: none;
+    }
+    .favoritesButton{
+        max-height: 1%;
+        margin:5%;
+        margin-left:0%;
+    }
+    .fa-trash{
+        padding:0.55vw;
     }
 }
 
