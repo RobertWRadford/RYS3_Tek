@@ -82,6 +82,26 @@ form button:hover{
     color: #edf2f4ff;
 }
 
+#detailPage {
+    padding-top: 2%;
+    display: block;
+}
+
+#detailPage > h1 {
+    font-size: 8vw;
+    margin-bottom: 2%;
+    background-color: rgba(86, 90, 132, .8);
+    border: 3px solid white;
+    border-radius: 15px;
+    width: 85%;
+    margin-left: 7.5%;
+    padding: 2%;
+}
+
+.mySlides > video {
+    width:100%;
+}
+
 /* select:focus{
     border:none;
 } */
@@ -97,3 +117,118 @@ form button:hover{
 /* .dropdown:hover .dropdown-content {
     display: block;
   } */
+
+
+/*https://www.w3schools.com/howto/howto_js_slideshow.asp*/
+
+* {box-sizing:border-box}
+
+/* Slideshow container */
+.slideshow-container {
+  width: 90%;
+  margin-left: 5%;
+  position: relative;
+}
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
+  width: 100%;
+}
+
+/* Next & previous buttons */
+.prev {
+    left: 0%;
+}
+
+.prev, .next {
+    font-size: 2vw;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+.active {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+/* end W3Schools snip */
+
+#saveFavorite > fieldset > button{
+    margin: 0;
+    margin-top: 2%;
+    border: 1px solid white;
+    background-color: rgba(86, 90, 132, .8);
+    font-size: 4.5vw;
+    border-radius: 1.8vw;
+}
+
+#gameDetails, #dealDetails {
+    width: 90%;
+    margin-left: 5%;
+    color: white;
+    font-size: 3vw;
+    font-family: 'Heebo', sans-serif;
+    line-height: 4vw;
+}
+
+#dealDetails {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.storeInfo {
+    width: 35%;
+    background: linear-gradient(to left, #eee, rgb(255, 166, 181));
+    color: #730114;
+    padding: 1%;
+}
+
+.game_button{
+    width:100%;
+    background-color: #d90429ff;
+}
+
+.homepage_item > form{
+
+    width:100%;
+}

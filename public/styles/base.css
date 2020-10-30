@@ -4,6 +4,7 @@
 --alice-blue: #edf2f4ff;
 --imperial-red: #ef233cff;
 --amaranth-red: #d90429ff; */
+@import url('https://fonts.googleapis.com/css2?family=Heebo&display=swap');
 
 #container{
     display: flex;
@@ -23,6 +24,25 @@ body{
     margin: 0 auto;
     text-align: center;
 }
+
+footer {
+    background-color: rgba(86, 90, 132, .8);
+    border: 1px solid white;
+    border-radius: 1%;
+    padding: 1%;
+    font-size: 2.5vw;
+    color: rgb(223, 219, 219);
+}
+
+.page, .page > button{
+    font-size: 4vw;
+    margin: 0;
+    margin-right: 5%;
+    margin-bottom: 5%;
+    display: inline-block;
+}
+
+
 
 img{
     width: 100%;
@@ -128,11 +148,6 @@ margin-bottom: .3vw;
     body{
         overflow-x: hidden;
     }
-    
-    .page{
-        margin-top: 0px;
-        display: inline-block;
-    }
 
     #bottom{
         margin-left: 15vw;
@@ -140,6 +155,7 @@ margin-bottom: .3vw;
 
     footer{
         margin-left: 15vw;
+        font-size: 1.5vw;
     }
 
     select{
@@ -148,6 +164,11 @@ margin-bottom: .3vw;
     }
     #brand{
         margin-left: 15vw;
+    }
+
+    #detailPage > section {
+        font-size: 1.5vw;
+        line-height: 2.2vw;
     }
 }
 
