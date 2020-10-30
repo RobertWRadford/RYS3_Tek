@@ -59,7 +59,11 @@ h1{
 }
 
 .links{
-    text-decoration: none;
+    width: 10vw;
+    max-height:8vw;
+    margin-top:0px;
+    margin-bottom:0px;
+    padding:0vw;
     color: #edf2f4ff;
 }
 
