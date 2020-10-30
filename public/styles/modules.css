@@ -13,6 +13,14 @@
         width:45%;
         margin: 2vw 0px;
     }
+
+    form input{
+        width: 75%;
+    }
+
+        form button{
+            width: 13.4%
+        }
 }
 
 option:hover{
@@ -218,4 +226,14 @@ form button:hover{
     background: linear-gradient(to left, #eee, rgb(255, 166, 181));
     color: #730114;
     padding: 1%;
+}
+
+.game_button{
+    width:100%;
+    background-color: #d90429ff;
+}
+
+.homepage_item > form{
+
+    width:100%;
 }

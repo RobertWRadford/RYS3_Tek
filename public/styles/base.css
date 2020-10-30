@@ -6,7 +6,6 @@
 --amaranth-red: #d90429ff; */
 @import url('https://fonts.googleapis.com/css2?family=Heebo&display=swap');
 
-
 #container{
     display: flex;
     justify-content: center;
@@ -35,6 +34,16 @@ footer {
     color: rgb(223, 219, 219);
 }
 
+.page, .page > button{
+    font-size: 4vw;
+    margin: 0;
+    margin-right: 5%;
+    margin-bottom: 5%;
+    display: inline-block;
+}
+
+
+
 img{
     width: 100%;
 }
@@ -52,17 +61,18 @@ section{
     background: linear-gradient(to left, #730114, #D90529);
     border-radius: 6px;
     box-shadow: 5px 10px 14px;
+    justify-content:space-between;
 }
 
 h1{
-    font-size: 12vw;
+    font-size: 10vw;
     color: #edf2f4ff;
     font-family: 'Comic Dandy', sans-serif;
 }
 
 
 form input,form button{
-    padding:0.8vw;
+    padding:.8vw;
     font-size: 5vw;
     border: none;
     background: #edf2f4ff;
@@ -73,6 +83,15 @@ p{
     color: #edf2f4ff;
     margin: 2vw;
 }
+.game_title {
+    font-family: 'Death Star', sans-serif;
+    margin-bottom: .3vw;
+}
+.game_titled {
+font-family: 'Death Star', sans-serif;
+margin-bottom: .3vw;
+}
+
 .favoritesButton{
     margin-bottom:5%;
 
@@ -94,8 +113,6 @@ p{
         background: #ef233cff;
         z-index: 1;
     }
-    
-    
 
     section{
         width: 17%; 
