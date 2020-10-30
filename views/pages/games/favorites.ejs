@@ -8,10 +8,8 @@
             <% games.forEach((game) => { %>
 
                 <section class="favoriteSection">
-                    <div>
-                        <h1 class="game_title"><%= game.title %></h1>
-                        <img src = "<%= game.image_url %>">
-                    </div>    
+                    <h1 class="game_title"><%= game.title %></h1>
+                    <img src = "<%= game.image_url %>">   
                     <div class="favorites">
                         <form action="/gamepage" method="POST">
                             <fieldset>

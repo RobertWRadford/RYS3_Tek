@@ -181,7 +181,7 @@ margin-bottom: .3vw;
     .favoriteSection{
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
+        justify-content: space-between;
         align-items:center;
         background-color: none;
         width: 25%;
