@@ -28,8 +28,8 @@ app.post('/', homePage);
 hyphens, any special characters with blanks, and replace ampersans with the full word and. 
 This must be done to match the search request to the query string expected by the game API.*/
 app.post('/search', (req, res) => {
-    let queryStr = req.body.search.replace(/[\:\\\/\#\$]/g, '').replace(/\&/g, 'and').split(' ').join('-');
-    detailPage(req, res, queryStr);
+    let queryStr = req.body.search;
+    searchPage(req, res, queryStr);
 });
 /*POST the /gamepage route when the details button is pressed from any game form on the home
 page. The slug property associated with the selected game object form will be used to query
@@ -114,6 +114,29 @@ function homePage(req, res){
         })
         .catch(err => console.error('Homepage error:', err))
 }
+
+function searchPage(req, res, queryStr){
+    let page = req.body.page ? parseInt(req.body.page) : 1;
+    let platformList = req.body.platform ? req.body.platform : 0;
+    let genreList = req.body.genres ? req.body.genres : 0;
+    let url = `https://api.rawg.io/api/games?search=${queryStr}&page_size=16&page=${page}`;
+    let platformUrl = platformList != 0 ? typeof(platformList) == 'object' ? '&parent_platforms='+platformList.join(',') : '&parent_platforms='+platformList : '';
+    let genreUrl = genreList != 0 ? typeof(genreList) == 'object' ? '&genres='+genreList.join(',') : '&genres='+genreList : '';
+    url = url + platformUrl + genreUrl;
+    superagent.get(url)
+        .then(list => {
+            let gamesList = list.body.results.map(game => new Game(game));
+            let pages = {
+                previous: list.body.previous ? page-1 : null,
+                current: page,
+                next: list.body.next ? page+1 : null
+            }
+            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages, platforms: platformList, genres: genreList});
+        })
+        .catch(err => console.error('Homepage error:', err))
+}
+
+
 /* The queryStr (query string) is either coming in from the homepage which accesses the slug 
 property of the request body or it comes in from the search form in the requet body under
 the search property. That string is pushed into the game api url. A request is sent to this
