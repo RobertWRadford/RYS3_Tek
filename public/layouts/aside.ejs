@@ -2,6 +2,8 @@
 
     <form action="/search" method="post">
         <fieldset>
+            <input type='hidden' name='platform' value='<%= platforms %>' />
+            <input type='hidden' name='genres' value='<%= genres %>' />
             <input id="bar" type="text" name="search" placeholder="Search..." minlength="1" required><button><i id="mag" class="fas fa fa-search"></i></button>
         </fieldset>
     </form>
@@ -10,6 +12,7 @@
         <a class="links" href="/"><i class="fas fa fa-home"></i></a>
     </div>
     <form class="filter" action='/' method='post'>
+        <input type='hidden' name='searchName' value='<%= searchName %>' />
         <select id="platform" name="platform" multiple size=8>
             <option value="1">PC</option>
             <option value="2">Playstation</option>
