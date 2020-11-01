@@ -98,7 +98,8 @@ function homePage(req, res){
     let page = req.body.page ? parseInt(req.body.page) : 1;
     let platformList = req.body.platform ? req.body.platform : 0;
     let genreList = req.body.genres ? req.body.genres : 0;
-    let url = `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=16&page=${page}`;
+    let search = req.body.searchName ?  req.body.searchName : 0;
+    let url = search != 0 ? `https://api.rawg.io/api/games?search=${search}&page_size=16&page=${page}` : `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=16&page=${page}`;
     let platformUrl = platformList != 0 ? typeof(platformList) == 'object' ? '&parent_platforms='+platformList.join(',') : '&parent_platforms='+platformList : '';
     let genreUrl = genreList != 0 ? typeof(genreList) == 'object' ? '&genres='+genreList.join(',') : '&genres='+genreList : '';
     url = url + platformUrl + genreUrl;
@@ -110,7 +111,7 @@ function homePage(req, res){
                 current: page,
                 next: list.body.next ? page+1 : null
             }
-            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages, platforms: platformList, genres: genreList});
+            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages, platforms: platformList, genres: genreList, searchName: search});
         })
         .catch(err => console.error('Homepage error:', err))
 }
@@ -131,7 +132,7 @@ function searchPage(req, res, queryStr){
                 current: page,
                 next: list.body.next ? page+1 : null
             }
-            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages, platforms: platformList, genres: genreList});
+            res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages, platforms: platformList, genres: genreList, searchName: queryStr});
         })
         .catch(err => console.error('Homepage error:', err))
 }
