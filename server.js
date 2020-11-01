@@ -73,7 +73,8 @@ function Game(game){
     this.platforms = game.platforms ? game.platforms.map(plat => plat.platform.name) : ['No data'];
     this.parent_platforms = game.parent_platforms ? game.parent_platforms.map(plat => plat.platform.name) : ['No data'];
     this.genres = game.genres ? game.genres.map(type => type.name) : ['No data'];
-    this.trailer = game.clip ? game.clip.clip ? game.clip.clip : '' : '';
+    this.preview = game.clip ? game.clip.clip ? game.clip.clip : '' : '';
+    this.trailer = game.clip ? game.clip.video ? game.clip.video : '' : '';
     this.filters = game.tags ? game.tags.map(tag => tag.name) : ['No data'];
     this.description = game.description_raw ? game.description_raw : 'No data';
     this.gameID = game.id ? game.id : 4828;
@@ -114,7 +115,7 @@ function homePage(req, res){
         .catch(err => console.error('Homepage error:', err))
 }
 /* The queryStr (query string) is either coming in from the homepage which accesses the slug 
-property of the request body or it comes in from the search form in the requet body under 
+property of the request body or it comes in from the search form in the requet body under
 the search property. That string is pushed into the game api url. A request is sent to this
 API which returns the individual game information in the list (response body). The function
 will either render a gameDetails page or a nomatches page. */
@@ -154,8 +155,8 @@ the same /gameDetails route to keep looking at the details for the current game.
 function saveGame(req, res){
     const obj = req.body;
     // let sql = `IF NOT EXISTS (SELECT * FROM games WHERE slug = $2) INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
-    let sql = `INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
-    let values = [obj.title, obj.slug, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.trailer, obj.filters, obj.description]
+    let sql = `INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, platform, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
+    let values = [obj.title, obj.slug, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.platform, obj.trailer, obj.filters, obj.description]
     client.query(sql, values)
         .then(detailPage(req, res, obj.slug))
         .catch(err => console.error('returned error:', err))
