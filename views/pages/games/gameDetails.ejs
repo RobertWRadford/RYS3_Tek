@@ -11,10 +11,20 @@
                 <img src="<%=game.image_url %>">
             </div>
             <div class="mySlides fade">
-                <video controls><source src='<%= game.trailer %>'></video>
+                <video src='<%= game.preview %>' controls></video>
+            </div>
+            <div class="mySlides fade youtube">
+                <iframe  width=100% height=100% src="https://www.youtube.com/embed/<%= game.trailer %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
             <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
+        <br>
+
+        <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
         </div>
 
         <form id='saveFavorite' action="/addFavorite" method="POST">
@@ -27,6 +37,7 @@
                 <input type="hidden" name="parent_platforms" value="<%= game.parent_platforms%>" required>
                 <input type="hidden" name="genre" value="<%= game.genre %>" required>
                 <input type="hidden" name="trailer" value="<%= game.trailer %>" required>
+                <input type="hidden" name="preview" value="<%= game.preview %>" required>
                 <input type="hidden" name="filters" value="<%= game.filters %>" required>
                 <input type="hidden" name="description" value="<%= game.description %>" required>
                 <input type="hidden" name="slug" value="<%= game.slug %>" required>
@@ -76,10 +87,14 @@
     function showSlides(n) {
         var i;
         var slides = document.getElementsByClassName("mySlides");
+        var dots = document.getElementsByClassName("dot");
         if (n > slides.length) {slideIndex = 1}
         if (n < 1) {slideIndex = slides.length}
         for (i = 0; i < slides.length; i++) {
             slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
         }
         slides[slideIndex-1].style.display = "block";
         dots[slideIndex-1].className += " active";

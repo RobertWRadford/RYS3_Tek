@@ -104,6 +104,14 @@ margin-bottom: .3vw;
 }
 
 @media (min-width:960px){
+
+    .youtube {
+        height: 80vh;
+    }
+
+    .slideshow-container {
+        min-height: 30vh;
+    }
     
     aside{
         position: fixed;

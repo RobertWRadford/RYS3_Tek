@@ -10,6 +10,7 @@ CREATE TABLE games (
     platforms VARCHAR(255),
     parent_platforms VARCHAR(255),
     genres VARCHAR(255),
+    preview VARCHAR(255),
     trailer VARCHAR(255),
     filters VARCHAR,
     description VARCHAR
