@@ -140,7 +140,7 @@ the results of the query, the function will render the favorites page, populated
 the games from the database.
     It still needs to be paginated if there are over 15 games. */
 function favPage(req, res){
-    const sql = 'SELECT DISTINCT title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description FROM games;';
+    const sql = 'SELECT DISTINCT title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, preview, trailer, filters, description FROM games;';
     client.query(sql)
         .then(results => {
             res.render('pages/games/favorites.ejs', {games: results.rows});
@@ -155,8 +155,8 @@ the same /gameDetails route to keep looking at the details for the current game.
 function saveGame(req, res){
     const obj = req.body;
     // let sql = `IF NOT EXISTS (SELECT * FROM games WHERE slug = $2) INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
-    let sql = `INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, platform, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
-    let values = [obj.title, obj.slug, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.platform, obj.trailer, obj.filters, obj.description]
+    let sql = `INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, preview, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`;
+    let values = [obj.title, obj.slug, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.preview, obj.trailer, obj.filters, obj.description]
     client.query(sql, values)
         .then(detailPage(req, res, obj.slug))
         .catch(err => console.error('returned error:', err))
