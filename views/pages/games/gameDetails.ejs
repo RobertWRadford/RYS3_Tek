@@ -51,8 +51,12 @@
             <p>Platforms:<br><br><%= game.platforms %></p>
             <p>Rating:<br><br><%= game.rating %> / 5</p>
             <p>Reviews:<br><br><%= game.ratingCount %></p>
-            
         </section>
+
+        <form action="/suggest" method="post">
+            <input type="hidden" name="slug" value="<%= game.slug %>"/>
+            <button class="favoritesButton" type="submit">See Similar Games</button>
+        </form>
 
         <section id='dealDetails'> 
             <% deals.forEach(deal => { %>

@@ -99,7 +99,7 @@ function homePage(req, res){
     let platformList = req.body.platform ? req.body.platform : 0;
     let genreList = req.body.genres ? req.body.genres : 0;
     let search = req.body.searchName ?  req.body.searchName : 0;
-    let url = search != 0 ? `https://api.rawg.io/api/games?search=${search}&page_size=16&page=${page}` : `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=16&page=${page}`;
+    let url = search != 0 ? `https://api.rawg.io/api/games?search=${search}&page_size=16&page=${page}` : `https://api.rawg.io/api/games?exclude_additions=1&page_size=16&page=${page}`;
     let platformUrl = platformList != 0 ? typeof(platformList) == 'object' ? '&parent_platforms='+platformList.join(',') : '&parent_platforms='+platformList : '';
     let genreUrl = genreList != 0 ? typeof(genreList) == 'object' ? '&genres='+genreList.join(',') : '&genres='+genreList : '';
     url = url + platformUrl + genreUrl;
