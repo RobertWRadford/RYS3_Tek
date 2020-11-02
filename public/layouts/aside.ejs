@@ -7,7 +7,7 @@
             <% if (typeof genres != 'undefined') { %>
                 <input type='hidden' name='genres' value='<%= genres %>' />
             <% } %>
-            <input id="bar" type="text" name="search" placeholder="Search..." minlength="1" required><button><i id="mag" class="fas fa fa-search"></i></button>
+            <input id="bar" type="text" name="search" placeholder="<% if(typeof searchName != 'undefined' && searchName != '0'){ %><%= searchName %><% } else { %>Search... <% } %>" minlength="1" required><button><i id="mag" class="fas fa fa-search"></i></button>
         </fieldset>
     </form>
     <div class="dropdown">
