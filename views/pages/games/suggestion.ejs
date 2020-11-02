@@ -8,7 +8,28 @@
             <% suggestions.forEach((game) => { %>
                 <%- include('homepage_game_partial.ejs', {game: game}) %>
             <% }) %>
-            </article>
+        </article>
+        
+        <div id="bottom">
+            <% if(pages.previous != null) { %>
+            <form class="page" action='/suggest' method='post'>
+                <input type='hidden' name='page' value='<%= pages.previous %>' />
+                <input type="hidden" name='slug' value="<%= slug %>" />
+                <button class="bottom" type='submit'><%= pages.previous %></button>
+            </form>
+            <%  } %>
+    
+            <p class="page"><%= pages.current %></p>
+    
+            <% if(pages.next != null) { %>
+            <form class="page" action='/suggest' method='post'>
+                <input type='hidden' name='page' value='<%= pages.next %>' />
+                <input type="hidden" name='slug' value="<%= slug %>" />
+                <button class="bottom" type='submit'><%= pages.next %></button>
+            </form>
+            <%  } %>
+        </div>
+
         <%- include('../../../public/layouts/footer') %>
     </body>
 </html>
