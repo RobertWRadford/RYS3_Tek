@@ -35,7 +35,6 @@ footer {
 }
 
 .page, .page > button{
-    font-size: 4vw;
     margin: 0;
     margin-right: 5%;
     margin-bottom: 5%;
@@ -104,6 +103,10 @@ margin-bottom: .3vw;
 }
 
 @media (min-width:960px){
+
+.page, .page > button{
+    font-size: 1.5vw;
+}
 
     .youtube {
         height: 80vh;

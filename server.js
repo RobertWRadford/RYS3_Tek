@@ -60,6 +60,7 @@ superagent.get('https://www.cheapshark.com/api/1.0/stores')
     .then(list => stores = list.body.map(store => store.storeName))
     .catch(err => console.error('returned error:', err))
 
+
 /* The Game constructor function which creates game objects for every game that is rendered.
 The title property is used to display the title of the game, and is expected to match the
 search query of the user. On the /search route, the title is converted into a slug to query
@@ -99,7 +100,7 @@ function homePage(req, res){
     let platformList = req.body.platform ? req.body.platform : 0;
     let genreList = req.body.genres ? req.body.genres : 0;
     let search = req.body.searchName ?  req.body.searchName : 0;
-    let url = search != 0 ? `https://api.rawg.io/api/games?search=${search}&page_size=16&page=${page}` : `https://api.rawg.io/api/games?order=-rating&exclude_additions=1&page_size=16&page=${page}`;
+    let url = search != 0 ? `https://api.rawg.io/api/games?search=${search}&page_size=16&page=${page}` : `https://api.rawg.io/api/games?exclude_additions=1&page_size=16&page=${page}`;
     let platformUrl = platformList != 0 ? typeof(platformList) == 'object' ? '&parent_platforms='+platformList.join(',') : '&parent_platforms='+platformList : '';
     let genreUrl = genreList != 0 ? typeof(genreList) == 'object' ? '&genres='+genreList.join(',') : '&genres='+genreList : '';
     url = url + platformUrl + genreUrl;
