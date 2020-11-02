@@ -64,7 +64,7 @@ section{
 }
 
 h1{
-    font-size: 10vw;
+    font-size: 9vw;
     color: #edf2f4ff;
     font-family: 'Comic Dandy', sans-serif;
 }
@@ -142,10 +142,11 @@ margin-bottom: .3vw;
 
     header{
         width: 100%;
-        height: 20vh;
+        height: 9vw;
         position: fixed;
         font-size: .8vw;
-        background: #8d99aeff;
+        background: rgba(86, 90, 132, .9);
+        border-bottom: 2px solid rgba(255, 255, 255, .9);
     }
     
     .game_button{
@@ -157,7 +158,7 @@ margin-bottom: .3vw;
     }
     
     article{
-        padding-top: 25vh;
+        padding-top: 9vw;
         margin-left: 15vw;
         display: flex;
         flex-wrap: wrap;
