@@ -200,11 +200,17 @@ function delItem(req, res){
 
 function suggestGames(req,res){
     let gameSlug = req.body.slug;
-    let url = `https://api.rawg.io/api/games/${gameSlug}/suggested`;
+    let page = req.body.page ? parseInt(req.body.page) : 1;
+    let url = `https://api.rawg.io/api/games/${gameSlug}/suggested?page_size=16&page=${page}`;
     superagent.get(url)
         .then(list => {
             let suggestionsList = list.body.results.map(game => new Game(game));
-            res.render('pages/games/suggestion.ejs', {suggestions:suggestionsList});
+            let pages = {
+                previous: list.body.previous ? page-1 : null,
+                current: page,
+                next: list.body.next ? page+1 : null
+            }
+            res.render('pages/games/suggestion.ejs', {suggestions:suggestionsList, pages: pages, slug: gameSlug});
         })
     .catch(err => console.error('Error suggesting games:', err));
 }
