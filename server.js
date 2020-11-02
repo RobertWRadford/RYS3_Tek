@@ -60,6 +60,7 @@ superagent.get('https://www.cheapshark.com/api/1.0/stores')
     .then(list => stores = list.body.map(store => store.storeName))
     .catch(err => console.error('returned error:', err))
 
+
 /* The Game constructor function which creates game objects for every game that is rendered.
 The title property is used to display the title of the game, and is expected to match the
 search query of the user. On the /search route, the title is converted into a slug to query

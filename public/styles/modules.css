@@ -6,6 +6,10 @@
 --amaranth-red: #d90429ff; */
 @media (max-width:959px){
     
+    .page, .page > button{
+        font-size: 6vw;
+    }
+
     .youtube {
         height: 38vh;
     }
