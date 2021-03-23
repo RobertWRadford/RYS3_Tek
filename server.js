@@ -1,15 +1,19 @@
-'use strict'
-
 //START CONFIGURATIONS///////////////////////////////////////////////////////////////////////
 require('dotenv').config();
 const express = require('express');
-const pg = require('pg');
+const { Client } = require('pg');
 const superagent = require('superagent');
 const app = express();
 const cors = require('cors');
 const methodOverride = require('method-override');
 const PORT = process.env.PORT || 3015;
-const client = new pg.Client(process.env.DATABASE_URL);
+const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectionUnauthorized: false
+    }
+});
+
 client.on('error', err => console.log('client on error'));
 //APPLY EJS TO THE VIEWS FOLDER
 app.set('view engine', 'ejs');
