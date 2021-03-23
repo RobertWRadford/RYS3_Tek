@@ -250,3 +250,4 @@ client.connect().then(() => {
         console.log(`listening on ${PORT}`);
     });
 })
+.catch(err => console.error('returned error:', err))
