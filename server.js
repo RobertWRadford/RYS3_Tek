@@ -7,16 +7,8 @@ const cors = require('cors');
 const methodOverride = require('method-override');
 const PORT = process.env.PORT || 3015;
 const key = process.env.KEY
-let ssl_config = null;
-if (process.env.NODE_ENV === 'development') {
-    ssl_config = {rejectUnauthorized: false};
-}
-const { Client } = require('pg');
-const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    max: 20,
-    ssl: ssl_config
-});
+const pg = require('pg');
+const client = new pg.Client(process.env.DATABASE_URL);
 
 client.on('error', err => console.log('client on error'));
 //APPLY EJS TO THE VIEWS FOLDER
@@ -27,6 +19,40 @@ app.use(express.static('public'));
 app.use(cors());
 app.use(methodOverride('_method'));
 //END CONFIGURATIONS///////////////////////////////////////////////////////////////////////
+
+//START ROUTES/////////////////////////////////////////////////////////////////////////////
+//GET / route on page load and load homepage
+app.get('/', homePage);
+app.post('/', homePage);
+/*POST /search route when search form submitted from homepage. Then replace the spaces with 
+hyphens, any special characters with blanks, and replace ampersans with the full word and. 
+This must be done to match the search request to the query string expected by the game API.*/
+app.post('/search', (req, res) => {
+    let queryStr = req.body.search;
+    searchPage(req, res, queryStr);
+});
+/*POST the /gamepage route when the details button is pressed from any game form on the home
+page. The slug property associated with the selected game object form will be used to query
+the game API to respond with the data about the specific game selected.*/
+app.post('/gamepage', (req, res) => {
+    let queryStr = req.body.slug ? req.body.slug : 'unknown';
+    detailPage(req, res, queryStr);
+});
+
+//POST the data from the page request from the home page and render the next home page. 
+app.post('/homePagination', homePage);
+//GET the favorites page when the user requests the favorites page in the nav bar.
+app.get('/favorites', favPage);
+/*POST the current game rendered on the current details page to the games database and 
+rerender the current gameDetails page.*/
+
+app.post('/addFavorite', saveGame);
+//DELETE on the favorites route when the delete form is submitted from the favorites page.
+app.delete('/favorites', delItem);
+//GET all routes handles errors to unmanaged routes.
+app.get('*', () => console.log('error 404'));
+app.post('/suggest', suggestGames)
+//END ROUTES///////////////////////////////////////////////////////////////////////////////
 
 //START FUNCTIONS///////////////////////////////////////////////////////////////////////// 
 let stores = [];
@@ -173,40 +199,6 @@ function suggestGames(req,res){
         }).catch(err => console.error('Error suggesting games:', err));
 }
 //END FUNCTIONS //////////////////////////////////////////////////////////////////////////
-
-//START ROUTES/////////////////////////////////////////////////////////////////////////////
-//GET / route on page load and load homepage
-app.get('/', homePage);
-app.post('/', homePage);
-/*POST /search route when search form submitted from homepage. Then replace the spaces with 
-hyphens, any special characters with blanks, and replace ampersans with the full word and. 
-This must be done to match the search request to the query string expected by the game API.*/
-app.post('/search', (req, res) => {
-    let queryStr = req.body.search;
-    searchPage(req, res, queryStr);
-});
-/*POST the /gamepage route when the details button is pressed from any game form on the home
-page. The slug property associated with the selected game object form will be used to query
-the game API to respond with the data about the specific game selected.*/
-app.post('/gamepage', (req, res) => {
-    let queryStr = req.body.slug ? req.body.slug : 'unknown';
-    detailPage(req, res, queryStr);
-});
-
-//POST the data from the page request from the home page and render the next home page. 
-app.post('/homePagination', homePage);
-//GET the favorites page when the user requests the favorites page in the nav bar.
-app.get('/favorites', favPage);
-/*POST the current game rendered on the current details page to the games database and 
-rerender the current gameDetails page.*/
-
-app.post('/addFavorite', saveGame);
-//DELETE on the favorites route when the delete form is submitted from the favorites page.
-app.delete('/favorites', delItem);
-//GET all routes handles errors to unmanaged routes.
-app.get('*', () => console.log('error 404'));
-app.post('/suggest', suggestGames)
-//END ROUTES///////////////////////////////////////////////////////////////////////////////
 
 //listen to the port and log in the console to know which port is being listened to.
 client.connect().then(() => {
