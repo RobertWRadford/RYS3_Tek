@@ -6,6 +6,7 @@ const app = express();
 const cors = require('cors');
 const methodOverride = require('method-override');
 const PORT = process.env.PORT || 3015;
+const key = process.env.KEY
 let ssl_config = null;
 if (process.env.NODE_ENV === 'development') {
     ssl_config = {rejectUnauthorized: false};
@@ -26,40 +27,6 @@ app.use(express.static('public'));
 app.use(cors());
 app.use(methodOverride('_method'));
 //END CONFIGURATIONS///////////////////////////////////////////////////////////////////////
-
-//START ROUTES/////////////////////////////////////////////////////////////////////////////
-//GET / route on page load and load homepage
-app.get('/', homePage);
-app.post('/', homePage);
-/*POST /search route when search form submitted from homepage. Then replace the spaces with 
-hyphens, any special characters with blanks, and replace ampersans with the full word and. 
-This must be done to match the search request to the query string expected by the game API.*/
-app.post('/search', (req, res) => {
-    let queryStr = req.body.search;
-    searchPage(req, res, queryStr);
-});
-/*POST the /gamepage route when the details button is pressed from any game form on the home
-page. The slug property associated with the selected game object form will be used to query
-the game API to respond with the data about the specific game selected.*/
-app.post('/gamepage', (req, res) => {
-    let queryStr = req.body.slug ? req.body.slug : 'unknown';
-    detailPage(req, res, queryStr);
-});
-
-//POST the data from the page request from the home page and render the next home page. 
-app.post('/homePagination', homePage);
-//GET the favorites page when the user requests the favorites page in the nav bar.
-app.get('/favorites', favPage);
-/*POST the current game rendered on the current details page to the games database and 
-rerender the current gameDetails page.*/
-
-app.post('/addFavorite', saveGame);
-//DELETE on the favorites route when the delete form is submitted from the favorites page.
-app.delete('/favorites', delItem);
-//GET all routes handles errors to unmanaged routes.
-app.get('*', () => console.log('error 404'));
-app.post('/suggest', suggestGames)
-//END ROUTES///////////////////////////////////////////////////////////////////////////////
 
 //START FUNCTIONS///////////////////////////////////////////////////////////////////////// 
 let stores = [];
@@ -107,7 +74,7 @@ function homePage(req, res){
     let platformList = req.body.platform ? req.body.platform : 0;
     let genreList = req.body.genres ? req.body.genres : 0;
     let search = req.body.searchName ?  req.body.searchName : 0;
-    let url = search != 0 ? `https://api.rawg.io/api/games?search=${search}&page_size=16&page=${page}` : `https://api.rawg.io/api/games?exclude_additions=1&page_size=16&page=${page}`;
+    let url = search != 0 ? `https://api.rawg.io/api/games?key=${key}&search=${search}&page_size=16&page=${page}` : `https://api.rawg.io/api/games?key=${key}&exclude_additions=1&page_size=16&page=${page}`;
     let platformUrl = platformList != 0 ? typeof(platformList) == 'object' ? '&parent_platforms='+platformList.join(',') : '&parent_platforms='+platformList : '';
     let genreUrl = genreList != 0 ? typeof(genreList) == 'object' ? '&genres='+genreList.join(',') : '&genres='+genreList : '';
     url = url + platformUrl + genreUrl;
@@ -126,7 +93,7 @@ function searchPage(req, res, queryStr){
     let page = req.body.page ? parseInt(req.body.page) : 1;
     let platformList = req.body.platform ? req.body.platform : 0;
     let genreList = req.body.genres ? req.body.genres : 0;
-    let url = `https://api.rawg.io/api/games?search=${queryStr}&page_size=16&page=${page}`;
+    let url = `https://api.rawg.io/api/games?key=${key}&search=${queryStr}&page_size=16&page=${page}`;
     let platformUrl = platformList != 0 ? typeof(platformList) == 'object' ? '&parent_platforms='+platformList.join(',') : '&parent_platforms='+platformList : '';
     let genreUrl = genreList != 0 ? typeof(genreList) == 'object' ? '&genres='+genreList.join(',') : '&genres='+genreList : '';
     url = url + platformUrl + genreUrl;
@@ -148,7 +115,7 @@ the search property. That string is pushed into the game api url. A request is s
 API which returns the individual game information in the list (response body). The function
 will either render a gameDetails page or a nomatches page. */
 function detailPage(req, res, queryStr){
-    const url = `https://api.rawg.io/api/games/${queryStr}`;
+    const url = `https://api.rawg.io/api/games/${queryStr}?key=${key}`;
     superagent.get(url).then(list => {
             let game = new Game(list.body);
             let url2 = `https://www.cheapshark.com/api/1.0/deals?title=${game.slug}&exact=1`;
@@ -194,7 +161,7 @@ function delItem(req, res){
 function suggestGames(req,res){
     let gameSlug = req.body.slug;
     let page = req.body.page ? parseInt(req.body.page) : 1;
-    let url = `https://api.rawg.io/api/games/${gameSlug}/suggested?page_size=16&page=${page}`;
+    let url = `https://api.rawg.io/api/games/${gameSlug}/suggested?key=${key}&page_size=16&page=${page}`;
     superagent.get(url).then(list => {
             let suggestionsList = list.body.results.map(game => new Game(game));
             let pages = {
@@ -206,6 +173,40 @@ function suggestGames(req,res){
         }).catch(err => console.error('Error suggesting games:', err));
 }
 //END FUNCTIONS //////////////////////////////////////////////////////////////////////////
+
+//START ROUTES/////////////////////////////////////////////////////////////////////////////
+//GET / route on page load and load homepage
+app.get('/', homePage);
+app.post('/', homePage);
+/*POST /search route when search form submitted from homepage. Then replace the spaces with 
+hyphens, any special characters with blanks, and replace ampersans with the full word and. 
+This must be done to match the search request to the query string expected by the game API.*/
+app.post('/search', (req, res) => {
+    let queryStr = req.body.search;
+    searchPage(req, res, queryStr);
+});
+/*POST the /gamepage route when the details button is pressed from any game form on the home
+page. The slug property associated with the selected game object form will be used to query
+the game API to respond with the data about the specific game selected.*/
+app.post('/gamepage', (req, res) => {
+    let queryStr = req.body.slug ? req.body.slug : 'unknown';
+    detailPage(req, res, queryStr);
+});
+
+//POST the data from the page request from the home page and render the next home page. 
+app.post('/homePagination', homePage);
+//GET the favorites page when the user requests the favorites page in the nav bar.
+app.get('/favorites', favPage);
+/*POST the current game rendered on the current details page to the games database and 
+rerender the current gameDetails page.*/
+
+app.post('/addFavorite', saveGame);
+//DELETE on the favorites route when the delete form is submitted from the favorites page.
+app.delete('/favorites', delItem);
+//GET all routes handles errors to unmanaged routes.
+app.get('*', () => console.log('error 404'));
+app.post('/suggest', suggestGames)
+//END ROUTES///////////////////////////////////////////////////////////////////////////////
 
 //listen to the port and log in the console to know which port is being listened to.
 client.connect().then(() => {
