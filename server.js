@@ -1,17 +1,20 @@
 //START CONFIGURATIONS///////////////////////////////////////////////////////////////////////
 require('dotenv').config();
 const express = require('express');
-const { Client } = require('pg');
 const superagent = require('superagent');
 const app = express();
 const cors = require('cors');
 const methodOverride = require('method-override');
 const PORT = process.env.PORT || 3015;
+let ssl_config = null;
+if (process.env.NODE_ENV === 'development') {
+    ssl_config = {rejectUnauthorized: false};
+}
+const { Client } = require('pg');
 const client = new Client({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectionUnauthorized: false
-    }
+    max: 20,
+    ssl: ssl_config
 });
 
 client.on('error', err => console.log('client on error'));
@@ -108,8 +111,7 @@ function homePage(req, res){
     let platformUrl = platformList != 0 ? typeof(platformList) == 'object' ? '&parent_platforms='+platformList.join(',') : '&parent_platforms='+platformList : '';
     let genreUrl = genreList != 0 ? typeof(genreList) == 'object' ? '&genres='+genreList.join(',') : '&genres='+genreList : '';
     url = url + platformUrl + genreUrl;
-    superagent.get(url)
-        .then(list => {
+    superagent.get(url).then(list => {
             let gamesList = list.body.results.map(game => new Game(game));
             let pages = {
                 previous: list.body.previous ? page-1 : null,
@@ -117,8 +119,7 @@ function homePage(req, res){
                 next: list.body.next ? page+1 : null
             }
             res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages, platforms: platformList, genres: genreList, searchName: search});
-        })
-        .catch(err => console.error('Homepage error:', err))
+        }).catch(err => console.error('Homepage error:', err))
 }
 
 function searchPage(req, res, queryStr){
@@ -129,8 +130,7 @@ function searchPage(req, res, queryStr){
     let platformUrl = platformList != 0 ? typeof(platformList) == 'object' ? '&parent_platforms='+platformList.join(',') : '&parent_platforms='+platformList : '';
     let genreUrl = genreList != 0 ? typeof(genreList) == 'object' ? '&genres='+genreList.join(',') : '&genres='+genreList : '';
     url = url + platformUrl + genreUrl;
-    superagent.get(url)
-        .then(list => {
+    superagent.get(url).then(list => {
             let gamesList = list.body.results.map(game => new Game(game));
             let pages = {
                 previous: list.body.previous ? page-1 : null,
@@ -138,8 +138,7 @@ function searchPage(req, res, queryStr){
                 next: list.body.next ? page+1 : null
             }
             res.render('pages/homepage.ejs', {gamesList: gamesList, pages: pages, platforms: platformList, genres: genreList, searchName: queryStr});
-        })
-        .catch(err => console.error('Homepage error:', err))
+        }).catch(err => console.error('Homepage error:', err))
 }
 
 
@@ -150,18 +149,14 @@ API which returns the individual game information in the list (response body). T
 will either render a gameDetails page or a nomatches page. */
 function detailPage(req, res, queryStr){
     const url = `https://api.rawg.io/api/games/${queryStr}`;
-    superagent.get(url)
-        .then(list => {
+    superagent.get(url).then(list => {
             let game = new Game(list.body);
             let url2 = `https://www.cheapshark.com/api/1.0/deals?title=${game.slug}&exact=1`;
-            superagent.get(url2)
-                .then(result => {
+            superagent.get(url2).then(result => {
                     let deals = result.body.map(store => new Deal(store));
                     res.render('pages/games/gameDetails.ejs', {game: game, deals: deals});
-                })
-                .catch(err => console.error('returned error:', err))
-        })
-        .catch(err => console.error('Homepage error:', err))
+                }).catch(err => console.error('returned error:', err))
+        }).catch(err => console.error('Homepage error:', err))
 }
 /* This function is called by the route associated with our nav bar anchor tag MY GAMES.
 When called, favPage will request the client to query the games database. Then, with
@@ -170,11 +165,9 @@ the games from the database.
     It still needs to be paginated if there are over 15 games. */
 function favPage(req, res){
     const sql = 'SELECT DISTINCT title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, preview, trailer, filters, description FROM games;';
-    client.query(sql)
-        .then(results => {
+    client.query(sql).then(results => {
             res.render('pages/games/favorites.ejs', {games: results.rows});
-        })
-        .catch(err => console.error('returned error:', err))
+        }).catch(err => console.error('returned error:', err))
 }
 /* This route is called by the SAVE GAME button on the gameDetails page which submits
 a form with all the game data that will be saved. The saveGame function finds the 
@@ -186,9 +179,7 @@ function saveGame(req, res){
     // let sql = `IF NOT EXISTS (SELECT * FROM games WHERE slug = $2) INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
     let sql = `INSERT INTO games(title, slug, image_url, rating, ratingCount, platforms, parent_platforms, genres, preview, trailer, filters, description) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`;
     let values = [obj.title, obj.slug, obj.image_url, obj.rating, obj.ratingCount, obj.platforms, obj.parent_platforms, obj.genres, obj.preview, obj.trailer, obj.filters, obj.description]
-    client.query(sql, values)
-        .then(detailPage(req, res, obj.slug))
-        .catch(err => console.error('returned error:', err))
+    client.query(sql, values).then(detailPage(req, res, obj.slug)).catch(err => console.error('returned error:', err))
 }
 /* This route is called by the REMOVE button on the favorites page which submits
 a form with the id for the game as a remove_target input. The delItem function
@@ -197,17 +188,14 @@ selected item from the favorites list, and redirect user to the /favorites route
 function delItem(req, res){
     let delId = req.body.remove_target;
     let sql = `DELETE FROM games WHERE slug='${delId}';`;
-    client.query(sql)
-        .then(res.redirect('/favorites'))
-        .catch(err => console.error('Error deleting item:', err));
+    client.query(sql).then(res.redirect('/favorites')).catch(err => console.error('Error deleting item:', err));
 }
 
 function suggestGames(req,res){
     let gameSlug = req.body.slug;
     let page = req.body.page ? parseInt(req.body.page) : 1;
     let url = `https://api.rawg.io/api/games/${gameSlug}/suggested?page_size=16&page=${page}`;
-    superagent.get(url)
-        .then(list => {
+    superagent.get(url).then(list => {
             let suggestionsList = list.body.results.map(game => new Game(game));
             let pages = {
                 previous: list.body.previous ? page-1 : null,
@@ -215,33 +203,8 @@ function suggestGames(req,res){
                 next: list.body.next ? page+1 : null
             }
             res.render('pages/games/suggestion.ejs', {suggestions:suggestionsList, pages: pages, slug: gameSlug});
-        })
-    .catch(err => console.error('Error suggesting games:', err));
+        }).catch(err => console.error('Error suggesting games:', err));
 }
-/* function suggestGames(req,res){
-    let sql = 'SELECT * FROM games;';
-    client.query(sql)
-        .then(favorites =>{
-            favorites.rows.forEach(game =>{
-                console.log(game.slug);
-                let url = `https://api.rawg.io/api/games/${game.slug}/suggested`;
-                superagent.get(url)
-                    .then(list => {
-                        let gamesList = list.body.results.map(game => new Game(game));
-                        gamesList.reduce(confidence, value => {
-                        res.render('/views/pages/games/suggestion.ejs', {games : suggestions});    
-                        })
-                    })
-                .catch(err => console.error('Error suggesting games:', err));
-            })
-            let pages = {
-                previous: list.body.previous ? page-1 : null,
-                current: page,
-                next: list.body.next ? page+1 : null
-            }
-        })
-    .catch(err => console.error('Error suggesting games:', err));   
-} */
 //END FUNCTIONS //////////////////////////////////////////////////////////////////////////
 
 //listen to the port and log in the console to know which port is being listened to.
@@ -249,5 +212,4 @@ client.connect().then(() => {
     app.listen(PORT, () => {
         console.log(`listening on ${PORT}`);
     });
-})
-.catch(err => console.error('returned error:', err))
+}).catch(err => console.error('database connection returned error:', err))
