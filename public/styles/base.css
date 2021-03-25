@@ -32,6 +32,9 @@ footer {
     padding: 1%;
     font-size: 2.5vw;
     color: rgb(223, 219, 219);
+    position: fixed;
+    bottom: 0;
+    width: 85vw;
 }
 
 .page, .page > button{
