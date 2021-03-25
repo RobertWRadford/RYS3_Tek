@@ -34,7 +34,7 @@ footer {
     color: rgb(223, 219, 219);
     position: fixed;
     bottom: 0;
-    width: 85vw;
+    width: 100vw;
 }
 
 .page, .page > button{
@@ -180,6 +180,7 @@ margin-bottom: .3vw;
     footer{
         margin-left: 15vw;
         font-size: 1.5vw;
+        width: 85vw;
     }
     
     select{
